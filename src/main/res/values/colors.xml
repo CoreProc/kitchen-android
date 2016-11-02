@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FF4081</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#3F51B5</color>
+
+
+    <!-- FOR PRIMARY BUTTONS -->
+    <color name="colorPrimaryButtonOnUnfocused">#FFDDE7E6</color>
+    <color name="colorPrimaryButtonOnFocused">#FF787878</color>
+    <color name="colorPrimaryButtonOnPressed">#FF787272</color>
+    <color name="colorPrimaryButtonOnDisabled">#FF0DB6A5</color>
+
+
+    <!-- FOR DANGER BUTTONS -->
+    <color name="colorDangerButtonUnfocused">#FFCF3E40</color>
+    <color name="colorDangerButtonOnFocused">#FFE11719</color>
+    <color name="colorDangerButtonOnPressed">#FFE11719</color>
+    <color name="colorDangerButtonOnDisabled">#FF0DB6A5</color>
+
+    <!-- FOR STROKES -->
+    <color name="colorStrokeDefault">#FF000000</color>
+
+    <!-- FOR EDITTEXT -->
+    <color name="colorEditTextPrimary">#FFE2E0E0</color>
+    <color name="colorEditTextDanger">#FFFC8E8F</color>
+
+    <!-- FOR TEXTS -->
+    <color name="colorTextHint">#FFC4BFBF</color>
+
+
+    <color name="orange">#FF3909</color>
+    <color name="colorAccentDark">#00B482</color>
+
+    <color name="colorBlack">#555555</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorGrey">#707070</color>
+    <color name="colorGreyLight">#8A8A8A</color>
+</resources>

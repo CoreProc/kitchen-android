@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape
+            android:dither="true"
+            android:shape="rectangle">
+
+            <!-- use button radius in dimens -->
+            <corners android:radius="@dimen/button_radius_small"/>
+
+            <solid android:color="@color/colorPrimaryButtonOnUnfocused"/>
+
+
+        </shape>
+    </item>
+</layer-list>
