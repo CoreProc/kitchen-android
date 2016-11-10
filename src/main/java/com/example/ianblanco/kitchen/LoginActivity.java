@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -87,12 +88,12 @@ public abstract class LoginActivity extends AppCompatActivity {
         setApiValues();
 
         if (!mApplicationHasLayout) {
-            // User didnt set layout so we use the kitchen layout
 
+            // No layout; will use the kitchen layout
+            getSupportActionBar().hide();
             prepareTabs();
             prepareLoginForm();
             prepareSignUp();
-
 
         }
 //        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
