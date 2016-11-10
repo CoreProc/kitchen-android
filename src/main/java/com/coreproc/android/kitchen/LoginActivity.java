@@ -63,6 +63,8 @@ public abstract class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
 
     public interface LoginCallback {
+        void onStart();
+
         void onSuccess(User user, JsonObject jsonObject);
 
         void onError(APIError.Error error);
@@ -79,6 +81,11 @@ public abstract class LoginActivity extends AppCompatActivity {
 
         mApplicationHasLayout = setLayout() != 0;
         setApiValues();
+
+        mProgressDialog = new ProgressDialog(mContext);
+        mProgressDialog.setMessage(getString(R.string.please_wait));
+        mProgressDialog.setCancelable(false);
+
 
         if (!mApplicationHasLayout) {
 
@@ -152,18 +159,7 @@ public abstract class LoginActivity extends AppCompatActivity {
         mPasswordView.addTextChangedListener(mPasswordViewTextWatcher);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (mLoginCallback == null) {
-                    UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
-                    return;
-                }
-
-                loginFunction(mEmailView.getText().toString(), mPasswordView.getText().toString(), mLoginCallback);
-            }
-        });
+        loginFunction(mEmailView, mPasswordView, mEmailSignInButton, mLoginCallback);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -176,23 +172,34 @@ public abstract class LoginActivity extends AppCompatActivity {
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.addTextChangedListener(mPasswordViewTextWatcher);
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mLoginCallback == null) {
-                    UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
-                    return;
-                }
-
-                loginFunction(mEmailView.getText().toString(), mPasswordView.getText().toString(), mLoginCallback);
-            }
-        });
+        loginFunction(mEmailView, mPasswordView, mEmailSignInButton, mLoginCallback);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
 
     private void showProgress(final boolean show) {
+
+
+        if(mApplicationHasLayout) {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog.setMessage(getString(R.string.please_wait));
+            mProgressDialog.setCancelable(false);
+
+            if (show) {
+                mProgressDialog.show();
+            } else {
+                if (mProgressDialog.isShowing())
+                    mProgressDialog.hide();
+            }
+
+            return;
+        }
+
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
@@ -334,60 +341,13 @@ public abstract class LoginActivity extends AppCompatActivity {
         mAlertDialog = null;
     }
 
-    protected void loginFunction(String userName, String password, final LoginCallback callBack) {
-
-        if (userName.equals("") && password.equals("")) {
-            String title = "Error";
-            String message = "Please fill required fields";
-            UiUtil.showAlertDialog(mContext, title, message, true);
-            return;
-        }
-
-        if (mLoginUrlSegment.length() == 0) {
-            UiUtil.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
-            return;
-        }
-
-        showProgress(true);
-        String auth = mAuthKey;
-        ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
-        SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
-        Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (!response.isSuccessful()) {
-                    showProgress(false);
-                    Log.i("tag", "wrong credentials");
-                    APIError error = ErrorUtil.parsingError(response);
-                    callBack.onError(error.getError());
-                    return;
-                }
-                Log.i("tag", "success");
-                Log.i("json", "response:" + response.body());
-
-                User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
-
-                showProgress(false);
-                callBack.onSuccess(user, response.body());
-
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                showProgress(false);
-                callBack.onFailed();
-            }
-        });
-    }
-
     protected void loginFunction(final TextView userNameTextView, final TextView passwordTextView, Button loginButton, final LoginCallback callBack) {
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (mLoginCallback == null) {
+                if (callBack == null) {
                     UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
                     return;
                 }
@@ -440,8 +400,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                 });
             }
         });
-
-
+        
     }
 
 
