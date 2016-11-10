@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.support.design.widget.TabLayout;
 
+import com.coreproc.android.kitchen.callbacks.LoginCallback;
 import com.coreproc.android.kitchen.models.APIError;
 import com.coreproc.android.kitchen.models.SampleUserCredentials;
 import com.coreproc.android.kitchen.models.User;
@@ -53,6 +54,7 @@ public abstract class LoginActivity extends AppCompatActivity {
     protected String mBaseUrl;
     protected String mAuthKey;
     protected String mLoginUrlSegment;
+    protected String mSignUpUrlSegment;
     protected LoginCallback mLoginCallback = null;
 
     // UI references.
@@ -61,15 +63,6 @@ public abstract class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
-    public interface LoginCallback {
-        void onStart();
-
-        void onSuccess(User user, JsonObject jsonObject);
-
-        void onError(APIError.Error error);
-
-        void onFailed();
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -158,7 +151,7 @@ public abstract class LoginActivity extends AppCompatActivity {
         mPasswordView.addTextChangedListener(mPasswordViewTextWatcher);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        loginFunction(mEmailView, mPasswordView, mEmailSignInButton, mLoginCallback);
+        loginUser(mEmailView, mPasswordView, mEmailSignInButton, mLoginCallback);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -171,7 +164,7 @@ public abstract class LoginActivity extends AppCompatActivity {
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.addTextChangedListener(mPasswordViewTextWatcher);
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        loginFunction(mEmailView, mPasswordView, mEmailSignInButton, mLoginCallback);
+        loginUser(mEmailView, mPasswordView, mEmailSignInButton, mLoginCallback);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -180,6 +173,10 @@ public abstract class LoginActivity extends AppCompatActivity {
     public void showOnlyLoginForm(boolean show) {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setVisibility((show) ? View.GONE : View.VISIBLE);
+    }
+
+    public void setLoginCallback(LoginCallback loginCallback) {
+        mLoginCallback = loginCallback;
     }
 
     private void showProgress(final boolean show) {
@@ -286,7 +283,6 @@ public abstract class LoginActivity extends AppCompatActivity {
         }
     };
 
-
     private void setApiValues() {
         // Main Application Context
         // Get Base URL from meta-data
@@ -329,42 +325,34 @@ public abstract class LoginActivity extends AppCompatActivity {
         try {
             app = mainApplicationContext.getPackageManager().getApplicationInfo(mainApplicationContext.getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = app.metaData;
-            mLoginUrlSegment = bundle.getString("signup-url-segment", "");
+            mSignUpUrlSegment = bundle.getString("signup-url-segment", "");
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    protected void registerUser() {
 
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-
-        mProgressDialog = null;
-
-        if (mAlertDialog != null && mAlertDialog.isShowing()) {
-            mAlertDialog.dismiss();
-        }
-
-        mAlertDialog = null;
     }
 
-    protected void loginFunction(final TextView userNameTextView, final TextView passwordTextView, Button loginButton, final LoginCallback callBack) {
+    protected void loginUser(final TextView userNameTextView, final TextView passwordTextView, Button loginButton, final LoginCallback callBack) {
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (callBack == null) {
-                    UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN callback using \"setLoginCallback()\".");
-                    return;
+                if (mLoginCallback == null) {
+                    // if preset
+                    mLoginCallback = callBack;
+
+                    if (mLoginCallback == null) {
+                        UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN callback using \"setLoginCallback()\".");
+                        return;
+                    }
                 }
 
-                callBack.onStart();
+                mLoginCallback.onStart();
 
                 String userName = userNameTextView.getText().toString();
                 String password = passwordTextView.getText().toString();
@@ -393,7 +381,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                             showProgress(false);
                             Log.i("tag", "wrong credentials");
                             APIError error = ErrorUtil.parsingError(response);
-                            callBack.onError(error.getError());
+                            mLoginCallback.onError(error.getError());
                             return;
                         }
                         Log.i("tag", "success");
@@ -402,14 +390,14 @@ public abstract class LoginActivity extends AppCompatActivity {
                         User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
 
                         showProgress(false);
-                        callBack.onSuccess(user, response.body());
+                        mLoginCallback.onSuccess(user, response.body());
 
                     }
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
                         showProgress(false);
-                        callBack.onFailed();
+                        mLoginCallback.onFailed();
                     }
                 });
             }
@@ -417,7 +405,7 @@ public abstract class LoginActivity extends AppCompatActivity {
 
     }
 
-    protected void loginFunction(String userName, String password, final LoginCallback callBack) {
+    protected void loginUser(String userName, String password, final LoginCallback callBack) {
 
         if (callBack == null) {
             UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN callback using \"setLoginCallback()\".");
@@ -425,7 +413,6 @@ public abstract class LoginActivity extends AppCompatActivity {
         }
 
         callBack.onStart();
-
 
         if (userName.equals("") && password.equals("")) {
             String title = "Error";
@@ -474,5 +461,21 @@ public abstract class LoginActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+
+        mProgressDialog = null;
+
+        if (mAlertDialog != null && mAlertDialog.isShowing()) {
+            mAlertDialog.dismiss();
+        }
+
+        mAlertDialog = null;
+    }
 
 }
