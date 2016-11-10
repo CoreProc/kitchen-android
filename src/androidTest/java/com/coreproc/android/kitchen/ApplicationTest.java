@@ -1,4 +1,4 @@
-package com.example.ianblanco.kitchen;
+package com.coreproc.android.kitchen;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

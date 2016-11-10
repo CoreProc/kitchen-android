@@ -1,4 +1,4 @@
-package com.example.ianblanco.kitchen.utils;
+package com.coreproc.android.kitchen.utils;
 
 import android.content.Context;
 import android.content.DialogInterface;

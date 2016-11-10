@@ -1,6 +1,5 @@
-package com.example.ianblanco.kitchen.models;
+package com.coreproc.android.kitchen.models;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -28,7 +27,6 @@ public class User implements Serializable {
 
     public User(){
     }
-
 
     public String getId() {
         return id;

@@ -1,4 +1,4 @@
-package com.example.ianblanco.kitchen.adapters;
+package com.coreproc.android.kitchen.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.ianblanco.kitchen.R;
-import com.example.ianblanco.kitchen.models.SampleModel;
+import com.coreproc.android.kitchen.R;
+import com.coreproc.android.kitchen.models.SampleModel;
 
 import java.util.List;
 

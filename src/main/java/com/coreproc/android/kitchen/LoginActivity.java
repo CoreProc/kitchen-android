@@ -1,13 +1,11 @@
-package com.example.ianblanco.kitchen;
+package com.coreproc.android.kitchen;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,27 +15,22 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.support.design.widget.TabLayout;
 
-import com.example.ianblanco.kitchen.models.APIError;
-import com.example.ianblanco.kitchen.models.SampleUserCredentials;
-import com.example.ianblanco.kitchen.models.User;
-import com.example.ianblanco.kitchen.utils.ErrorUtil;
-import com.example.ianblanco.kitchen.utils.RestClient;
-import com.example.ianblanco.kitchen.utils.ApiInterface;
-import com.example.ianblanco.kitchen.utils.UiUtil;
+import com.coreproc.android.kitchen.models.APIError;
+import com.coreproc.android.kitchen.models.SampleUserCredentials;
+import com.coreproc.android.kitchen.models.User;
+import com.coreproc.android.kitchen.utils.ErrorUtil;
+import com.coreproc.android.kitchen.utils.RestClient;
+import com.coreproc.android.kitchen.utils.ApiInterface;
+import com.coreproc.android.kitchen.utils.UiUtil;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-
-import org.w3c.dom.Text;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -157,21 +150,6 @@ public abstract class LoginActivity extends AppCompatActivity {
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.addTextChangedListener(mPasswordViewTextWatcher);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    if (mLoginCallback == null) {
-                        UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
-                        return true;
-                    }
-
-                    loginFunction(mEmailView.getText().toString(), mPasswordView.getText().toString(), mLoginCallback);
-                    return true;
-                }
-                return false;
-            }
-        });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
@@ -197,22 +175,6 @@ public abstract class LoginActivity extends AppCompatActivity {
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.addTextChangedListener(mPasswordViewTextWatcher);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    if (mLoginCallback == null) {
-                        UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
-                        return true;
-                    }
-
-                    loginFunction(mEmailView.getText().toString(), mPasswordView.getText().toString(), mLoginCallback);
-                    return true;
-                }
-                return false;
-            }
-        });
-
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -417,61 +379,72 @@ public abstract class LoginActivity extends AppCompatActivity {
                 callBack.onFailed();
             }
         });
-
-
     }
 
-    protected void loginFunction(TextView userNameTextView, TextView passwordTextView, final LoginCallback callBack) {
+    protected void loginFunction(final TextView userNameTextView, final TextView passwordTextView, Button loginButton, final LoginCallback callBack) {
 
-        String userName = userNameTextView.getText().toString();
-        String password = passwordTextView.getText().toString();
-
-        if (userName.equals("") && password.equals("")) {
-            String title = "Error";
-            String message = "Please fill required fields";
-            UiUtil.showAlertDialog(mContext, title, message, true);
-            return;
-        }
-
-        if (mLoginUrlSegment.length() == 0) {
-            UiUtil.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
-            return;
-        }
-
-        showProgress(true);
-        String auth = mAuthKey;
-        ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
-        SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
-        Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
-        call.enqueue(new Callback<JsonObject>() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (!response.isSuccessful()) {
-                    showProgress(false);
-                    Log.i("tag", "wrong credentials");
-                    APIError error = ErrorUtil.parsingError(response);
-                    callBack.onError(error.getError());
+            public void onClick(View v) {
+
+                if (mLoginCallback == null) {
+                    UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
                     return;
                 }
-                Log.i("tag", "success");
-                Log.i("json", "response:" + response.body());
 
-                User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
+                String userName = userNameTextView.getText().toString();
+                String password = passwordTextView.getText().toString();
 
-                showProgress(false);
-                callBack.onSuccess(user, response.body());
+                if (userName.equals("") && password.equals("")) {
+                    String title = "Error";
+                    String message = "Please fill required fields";
+                    UiUtil.showAlertDialog(mContext, title, message, true);
+                    return;
+                }
 
-            }
+                if (mLoginUrlSegment.length() == 0) {
+                    UiUtil.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
+                    return;
+                }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                showProgress(false);
-                callBack.onFailed();
+                showProgress(true);
+                String auth = mAuthKey;
+                ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
+                SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
+                Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
+                call.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (!response.isSuccessful()) {
+                            showProgress(false);
+                            Log.i("tag", "wrong credentials");
+                            APIError error = ErrorUtil.parsingError(response);
+                            callBack.onError(error.getError());
+                            return;
+                        }
+                        Log.i("tag", "success");
+                        Log.i("json", "response:" + response.body());
+
+                        User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
+
+                        showProgress(false);
+                        callBack.onSuccess(user, response.body());
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        showProgress(false);
+                        callBack.onFailed();
+                    }
+                });
             }
         });
 
 
     }
+
+
 
 
 }

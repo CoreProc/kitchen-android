@@ -1,4 +1,4 @@
-package com.example.ianblanco.kitchen.models;
+package com.coreproc.android.kitchen.models;
 
 import com.google.gson.annotations.SerializedName;
 

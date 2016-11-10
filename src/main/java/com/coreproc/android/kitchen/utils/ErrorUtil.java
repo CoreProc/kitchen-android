@@ -1,7 +1,7 @@
-package com.example.ianblanco.kitchen.utils;
+package com.coreproc.android.kitchen.utils;
 
 
-import com.example.ianblanco.kitchen.models.APIError;
+import com.coreproc.android.kitchen.models.APIError;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;

@@ -1,6 +1,6 @@
-package com.example.ianblanco.kitchen.utils;
+package com.coreproc.android.kitchen.utils;
 
-import com.example.ianblanco.kitchen.models.SampleUserCredentials;
+import com.coreproc.android.kitchen.models.SampleUserCredentials;
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;

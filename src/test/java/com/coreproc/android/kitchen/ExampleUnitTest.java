@@ -1,4 +1,4 @@
-package com.example.ianblanco.kitchen;
+package com.coreproc.android.kitchen;
 
 import org.junit.Test;
 
