@@ -42,7 +42,6 @@ import retrofit2.Response;
 public abstract class LoginActivity extends AppCompatActivity {
 
     protected abstract int setLayout();
-
     protected abstract Context setApplicationContext();
 
     public Context mContext;
@@ -178,6 +177,11 @@ public abstract class LoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    public void showOnlyLoginForm(boolean show) {
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setVisibility((show) ? View.GONE : View.VISIBLE);
+    }
+
     private void showProgress(final boolean show) {
 
 
@@ -251,10 +255,6 @@ public abstract class LoginActivity extends AppCompatActivity {
 
         }
     };
-
-    public void setLoginCallback(LoginCallback loginCallback) {
-        mLoginCallback = loginCallback;
-    }
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
