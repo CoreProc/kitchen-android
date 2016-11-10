@@ -1,27 +1,26 @@
-package com.example.ianblanco.vonbirthdayapp;
+package com.example.ianblanco.kitchen;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.ianblanco.vonbirthdayapp.models.APIError;
-import com.example.ianblanco.vonbirthdayapp.models.SampleUserCredentials;
-import com.example.ianblanco.vonbirthdayapp.utils.ErrorUtil;
-import com.example.ianblanco.vonbirthdayapp.utils.RestClient;
-import com.example.ianblanco.vonbirthdayapp.utils.ApiInterface;
+import com.example.ianblanco.kitchen.models.APIError;
+import com.example.ianblanco.kitchen.models.SampleUserCredentials;
+import com.example.ianblanco.kitchen.models.User;
+import com.example.ianblanco.kitchen.utils.ErrorUtil;
+import com.example.ianblanco.kitchen.utils.RestClient;
+import com.example.ianblanco.kitchen.utils.ApiInterface;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,18 +28,19 @@ import retrofit2.Response;
 /**
  * Created by IanBlanco on 9/7/2016.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class LoginActivity extends AppCompatActivity {
 
-    protected abstract int getLayout();
+    protected abstract int setLayout();
+    protected abstract Context setApplicationContext();
 
-    protected String mBaseUrl = "http://www.travelbook.ph/";
+    protected String mBaseUrl;
     public Context mContext;
     private AlertDialog mAlertDialog;
     private ProgressDialog mProgressDialog;
-    private JsonObject jsonObject;
+    private boolean mApplicationHasLayout = false;
 
-    public interface loginCallback {
-        void onSuccess(JsonObject jsonObject);
+    public interface LoginCallback {
+        void onSuccess(User user, JsonObject jsonObject);
 
         void onError(APIError.Error error);
 
@@ -50,8 +50,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayout());
+
+        setContentView(setLayout() == 0 ? R.layout.login_layout : setLayout());
         mContext = this;
+
+        mApplicationHasLayout = setLayout() != 0;
+        setApiValues();
 
 //        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(mToolbar);
@@ -62,6 +66,27 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        mActionBar.setDisplayHomeAsUpEnabled(true);
 //        mActionBar.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
 //        mActionBar.setDisplayShowTitleEnabled(false); // disable the default title element here (for centered title)
+
+    }
+
+    private void setApiValues() {
+        // Main Application Context
+        // Base URL
+        Context mainApplicationContext = setApplicationContext();
+        ApplicationInfo app = null;
+        try {
+            app = mainApplicationContext.getPackageManager().getApplicationInfo(mainApplicationContext.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = app.metaData;
+            mBaseUrl = bundle.getString("base-url", "");
+
+            if (mBaseUrl.length() == 0) {
+                showAlertDialog("URL not found", "Base URL not found in manifest. Please declare a meta-data value with name \"base-url\".");
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -82,18 +107,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         mAlertDialog = null;
     }
 
+    protected void loginFunction(String userName, String password, final LoginCallback callBack) {
 
-    protected void loginFunction(String user, String password, final loginCallback callBack) {
-
-        Log.i("tag", user);
-        if (user.equals("") && password.equals("")) {
+        Log.i("tag", userName);
+        if (userName.equals("") && password.equals("")) {
             String title = "Error";
             String message = "Please fill required fields";
             showAlertDialog(title, message, true);
         } else {
             String auth = "c814048d0ecb678a451f58da18c4897ca8c068b8";
             ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
-            SampleUserCredentials userCredentials = new SampleUserCredentials(user, password);
+            SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
             Call<JsonObject> call = apiInterface.Login(auth, userCredentials);
             call.enqueue(new Callback<JsonObject>() {
                 @Override
@@ -106,7 +130,10 @@ public abstract class BaseActivity extends AppCompatActivity {
                     }
                     Log.i("tag", "success");
                     Log.i("json", "response:" + response.body());
-                    callBack.onSuccess(response.body());
+
+                    User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
+
+                    callBack.onSuccess(user, response.body());
 
                 }
 

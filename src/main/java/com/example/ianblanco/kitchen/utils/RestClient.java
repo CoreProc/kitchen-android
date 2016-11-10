@@ -1,4 +1,4 @@
-package com.example.ianblanco.vonbirthdayapp.utils;
+package com.example.ianblanco.kitchen.utils;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

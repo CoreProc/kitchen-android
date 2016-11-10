@@ -1,4 +1,4 @@
-package com.example.ianblanco.vonbirthdayapp;
+package com.example.ianblanco.kitchen;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

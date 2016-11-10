@@ -1,8 +1,7 @@
-package com.example.ianblanco.vonbirthdayapp.utils;
+package com.example.ianblanco.kitchen.utils;
 
 
-import com.example.ianblanco.vonbirthdayapp.models.APIError;
-import com.google.gson.JsonObject;
+import com.example.ianblanco.kitchen.models.APIError;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;

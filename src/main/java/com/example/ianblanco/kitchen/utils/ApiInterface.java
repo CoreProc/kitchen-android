@@ -1,16 +1,10 @@
-package com.example.ianblanco.vonbirthdayapp.utils;
+package com.example.ianblanco.kitchen.utils;
 
-import com.example.ianblanco.vonbirthdayapp.models.SampleModel;
-import com.example.ianblanco.vonbirthdayapp.models.SampleUserCredentials;
+import com.example.ianblanco.kitchen.models.SampleUserCredentials;
 import com.google.gson.JsonObject;
 
-import java.util.List;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 

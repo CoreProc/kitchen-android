@@ -1,4 +1,4 @@
-package com.example.ianblanco.vonbirthdayapp;
+package com.example.ianblanco.kitchen;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.example.ianblanco.vonbirthdayapp.adapters;
+package com.example.ianblanco.kitchen.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.ianblanco.vonbirthdayapp.R;
-import com.example.ianblanco.vonbirthdayapp.models.SampleModel;
+import com.example.ianblanco.kitchen.R;
+import com.example.ianblanco.kitchen.models.SampleModel;
 
 import java.util.List;
 

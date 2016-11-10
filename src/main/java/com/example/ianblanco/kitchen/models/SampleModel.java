@@ -1,4 +1,4 @@
-package com.example.ianblanco.vonbirthdayapp.models;
+package com.example.ianblanco.kitchen.models;
 
 import com.google.gson.annotations.SerializedName;
 

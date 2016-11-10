@@ -1,8 +1,6 @@
-package com.example.ianblanco.vonbirthdayapp.models;
+package com.example.ianblanco.kitchen.models;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 /**
  * Created by IanBlanco on 10/5/2016.
