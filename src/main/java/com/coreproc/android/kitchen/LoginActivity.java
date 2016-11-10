@@ -348,7 +348,7 @@ public abstract class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (callBack == null) {
-                    UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
+                    UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN callback using \"setLoginCallback()\".");
                     return;
                 }
 
@@ -408,7 +408,7 @@ public abstract class LoginActivity extends AppCompatActivity {
     protected void loginFunction(String userName, String password, final LoginCallback callBack) {
 
         if (callBack == null) {
-            UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
+            UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN callback using \"setLoginCallback()\".");
             return;
         }
 
