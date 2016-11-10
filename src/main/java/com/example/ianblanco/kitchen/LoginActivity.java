@@ -1,16 +1,29 @@
 package com.example.ianblanco.kitchen;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.support.design.widget.TabLayout;
 
 import com.example.ianblanco.kitchen.models.APIError;
 import com.example.ianblanco.kitchen.models.SampleUserCredentials;
@@ -45,6 +58,13 @@ public abstract class LoginActivity extends AppCompatActivity {
     // API Values
     protected String mBaseUrl;
     protected String mAuthKey;
+    protected LoginCallback mLoginCallback = null;
+
+    // UI references.
+    private EditText mEmailView;
+    private EditText mPasswordView;
+    private View mProgressView;
+    private View mLoginFormView;
 
     public interface LoginCallback {
         void onSuccess(User user, JsonObject jsonObject);
@@ -65,6 +85,12 @@ public abstract class LoginActivity extends AppCompatActivity {
         setApiValues();
 
         if (!mApplicationHasLayout) {
+            // User didnt set layout so we use the kitchen layout
+
+            prepareTabs();
+            prepareLoginForm();
+            prepareSignUp();
+
 
         }
 //        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,6 +104,216 @@ public abstract class LoginActivity extends AppCompatActivity {
 //        mActionBar.setDisplayShowTitleEnabled(false); // disable the default title element here (for centered title)
 
     }
+
+    private void prepareTabs() {
+
+        final LinearLayout loginLinearLayout = (LinearLayout) findViewById(R.id.layout_login);
+        final LinearLayout signUpLinearLayout = (LinearLayout) findViewById(R.id.layout_sign_up);
+
+        loginLinearLayout.setVisibility(View.VISIBLE);
+        signUpLinearLayout.setVisibility(View.GONE);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.action_log_in_short)).setTag("login"));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.action_sign_up)).setTag("signup"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                switch (tab.getTag().toString()) {
+                    case "login":
+                        loginLinearLayout.setVisibility(View.VISIBLE);
+                        signUpLinearLayout.setVisibility(View.GONE);
+                        break;
+
+                    case "signup":
+                        loginLinearLayout.setVisibility(View.GONE);
+                        signUpLinearLayout.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+
+    private void prepareLoginForm() {
+
+        mEmailView = (EditText) findViewById(R.id.email);
+        mEmailView.addTextChangedListener(mEmailViewTextWatcher);
+
+        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView.addTextChangedListener(mPasswordViewTextWatcher);
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                    if (mLoginCallback == null) {
+                        UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
+                        return true;
+                    }
+
+                    loginFunction(mEmailView.getText().toString(), mPasswordView.getText().toString(), mLoginCallback);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (mLoginCallback == null) {
+                    UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
+                    return;
+                }
+
+                loginFunction(mEmailView.getText().toString(), mPasswordView.getText().toString(), mLoginCallback);
+            }
+        });
+
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void prepareSignUp() {
+        mEmailView = (EditText) findViewById(R.id.email);
+        mEmailView.addTextChangedListener(mEmailViewTextWatcher);
+
+        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView.addTextChangedListener(mPasswordViewTextWatcher);
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                    if (mLoginCallback == null) {
+                        UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
+                        return true;
+                    }
+
+                    loginFunction(mEmailView.getText().toString(), mPasswordView.getText().toString(), mLoginCallback);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mLoginCallback == null) {
+                    UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
+                    return;
+                }
+
+                loginFunction(mEmailView.getText().toString(), mPasswordView.getText().toString(), mLoginCallback);
+            }
+        });
+
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    TextWatcher mEmailViewTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (TextUtils.isEmpty(s.toString())) {
+                mEmailView.setError(getString(R.string.error_field_required));
+            } else if (!isEmailValid(s.toString())) {
+                mEmailView.setError(getString(R.string.error_invalid_email));
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    public void setLoginCallback(LoginCallback loginCallback) {
+        mLoginCallback = loginCallback;
+    }
+
+    private boolean isEmailValid(String email) {
+        //TODO: Replace this with your own logic
+        return email.contains("@");
+    }
+
+    private boolean isPasswordValid(String password) {
+        //TODO: Replace this with your own logic
+        return password.length() > 4;
+    }
+
+    TextWatcher mPasswordViewTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // Check for a valid password, if the user entered one.
+            if (!TextUtils.isEmpty(s.toString()) && !isPasswordValid(s.toString())) {
+                mPasswordView.setError(getString(R.string.error_invalid_password));
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
 
     private void setApiValues() {
         // Main Application Context
@@ -108,10 +344,6 @@ public abstract class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void initPredefinedFunction() {
-
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -136,6 +368,8 @@ public abstract class LoginActivity extends AppCompatActivity {
             String message = "Please fill required fields";
             UiUtil.showAlertDialog(mContext, title, message, true);
         } else {
+
+            showProgress(true);
             String auth = mAuthKey;
             ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
             SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
@@ -144,6 +378,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (!response.isSuccessful()) {
+                        showProgress(false);
                         Log.i("tag", "wrong credentials");
                         APIError error = ErrorUtil.parsingError(response);
                         callBack.onError(error.getError());
@@ -154,13 +389,14 @@ public abstract class LoginActivity extends AppCompatActivity {
 
                     User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
 
+                    showProgress(false);
                     callBack.onSuccess(user, response.body());
 
                 }
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                    showProgress(false);
                    callBack.onFailed();
                 }
             });
@@ -179,7 +415,9 @@ public abstract class LoginActivity extends AppCompatActivity {
             String message = "Please fill required fields";
             UiUtil.showAlertDialog(mContext, title, message, true);
         } else {
-            String auth = "c814048d0ecb678a451f58da18c4897ca8c068b8";
+
+            showProgress(true);
+            String auth = mAuthKey;
             ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
             SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
             Call<JsonObject> call = apiInterface.Login(auth, userCredentials);
@@ -187,6 +425,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (!response.isSuccessful()) {
+                        showProgress(false);
                         Log.i("tag", "wrong credentials");
                         APIError error = ErrorUtil.parsingError(response);
                         callBack.onError(error.getError());
@@ -197,13 +436,14 @@ public abstract class LoginActivity extends AppCompatActivity {
 
                     User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
 
+                    showProgress(false);
                     callBack.onSuccess(user, response.body());
 
                 }
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                    showProgress(false);
                     callBack.onFailed();
                 }
             });
