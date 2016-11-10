@@ -48,6 +48,7 @@ import retrofit2.Response;
 public abstract class LoginActivity extends AppCompatActivity {
 
     protected abstract int setLayout();
+
     protected abstract Context setApplicationContext();
 
     public Context mContext;
@@ -58,6 +59,7 @@ public abstract class LoginActivity extends AppCompatActivity {
     // API Values
     protected String mBaseUrl;
     protected String mAuthKey;
+    protected String mLoginUrlSegment;
     protected LoginCallback mLoginCallback = null;
 
     // UI references.
@@ -342,6 +344,14 @@ public abstract class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        try {
+            app = mainApplicationContext.getPackageManager().getApplicationInfo(mainApplicationContext.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = app.metaData;
+            mLoginUrlSegment = bundle.getString("login-url-segment", "");
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -367,42 +377,47 @@ public abstract class LoginActivity extends AppCompatActivity {
             String title = "Error";
             String message = "Please fill required fields";
             UiUtil.showAlertDialog(mContext, title, message, true);
-        } else {
-
-            showProgress(true);
-            String auth = mAuthKey;
-            ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
-            SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
-            Call<JsonObject> call = apiInterface.Login(auth, userCredentials);
-            call.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (!response.isSuccessful()) {
-                        showProgress(false);
-                        Log.i("tag", "wrong credentials");
-                        APIError error = ErrorUtil.parsingError(response);
-                        callBack.onError(error.getError());
-                        return;
-                    }
-                    Log.i("tag", "success");
-                    Log.i("json", "response:" + response.body());
-
-                    User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
-
-                    showProgress(false);
-                    callBack.onSuccess(user, response.body());
-
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    showProgress(false);
-                   callBack.onFailed();
-                }
-            });
-
-
+            return;
         }
+
+        if (mLoginUrlSegment.length() == 0) {
+            UiUtil.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
+            return;
+        }
+
+        showProgress(true);
+        String auth = mAuthKey;
+        ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
+        SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
+        Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (!response.isSuccessful()) {
+                    showProgress(false);
+                    Log.i("tag", "wrong credentials");
+                    APIError error = ErrorUtil.parsingError(response);
+                    callBack.onError(error.getError());
+                    return;
+                }
+                Log.i("tag", "success");
+                Log.i("json", "response:" + response.body());
+
+                User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
+
+                showProgress(false);
+                callBack.onSuccess(user, response.body());
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                showProgress(false);
+                callBack.onFailed();
+            }
+        });
+
+
     }
 
     protected void loginFunction(TextView userNameTextView, TextView passwordTextView, final LoginCallback callBack) {
@@ -414,46 +429,48 @@ public abstract class LoginActivity extends AppCompatActivity {
             String title = "Error";
             String message = "Please fill required fields";
             UiUtil.showAlertDialog(mContext, title, message, true);
-        } else {
-
-            showProgress(true);
-            String auth = mAuthKey;
-            ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
-            SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
-            Call<JsonObject> call = apiInterface.Login(auth, userCredentials);
-            call.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    if (!response.isSuccessful()) {
-                        showProgress(false);
-                        Log.i("tag", "wrong credentials");
-                        APIError error = ErrorUtil.parsingError(response);
-                        callBack.onError(error.getError());
-                        return;
-                    }
-                    Log.i("tag", "success");
-                    Log.i("json", "response:" + response.body());
-
-                    User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
-
-                    showProgress(false);
-                    callBack.onSuccess(user, response.body());
-
-                }
-
-                @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    showProgress(false);
-                    callBack.onFailed();
-                }
-            });
-
-
+            return;
         }
+
+        if (mLoginUrlSegment.length() == 0) {
+            UiUtil.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
+            return;
+        }
+
+        showProgress(true);
+        String auth = mAuthKey;
+        ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
+        SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
+        Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (!response.isSuccessful()) {
+                    showProgress(false);
+                    Log.i("tag", "wrong credentials");
+                    APIError error = ErrorUtil.parsingError(response);
+                    callBack.onError(error.getError());
+                    return;
+                }
+                Log.i("tag", "success");
+                Log.i("json", "response:" + response.body());
+
+                User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
+
+                showProgress(false);
+                callBack.onSuccess(user, response.body());
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                showProgress(false);
+                callBack.onFailed();
+            }
+        });
+
+
     }
-
-
-
 
 
 }
