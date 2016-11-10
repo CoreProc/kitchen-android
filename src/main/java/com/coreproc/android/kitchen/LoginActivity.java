@@ -338,6 +338,12 @@ public abstract class LoginActivity extends AppCompatActivity {
 
     protected void loginUser(final TextView userNameTextView, final TextView passwordTextView, Button loginButton, final LoginCallback callBack) {
 
+        if (userNameTextView == null || passwordTextView == null || loginButton == null) {
+            UiUtil.showAlertDialog(mContext, "Views not found", "Please set valid views.");
+            return;
+        }
+
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
