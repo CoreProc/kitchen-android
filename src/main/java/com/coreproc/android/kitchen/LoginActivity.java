@@ -289,7 +289,7 @@ public abstract class LoginActivity extends AppCompatActivity {
 
     private void setApiValues() {
         // Main Application Context
-        // Getting Base URL from meta-data
+        // Get Base URL from meta-data
         Context mainApplicationContext = setApplicationContext();
         ApplicationInfo app = null;
         try {
@@ -305,6 +305,7 @@ public abstract class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // Get Login Auth Key
         try {
             app = mainApplicationContext.getPackageManager().getApplicationInfo(mainApplicationContext.getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = app.metaData;
@@ -314,10 +315,21 @@ public abstract class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // Get Login URL Segment
         try {
             app = mainApplicationContext.getPackageManager().getApplicationInfo(mainApplicationContext.getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = app.metaData;
             mLoginUrlSegment = bundle.getString("login-url-segment", "");
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // Get SignUp URL Segment
+        try {
+            app = mainApplicationContext.getPackageManager().getApplicationInfo(mainApplicationContext.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = app.metaData;
+            mLoginUrlSegment = bundle.getString("signup-url-segment", "");
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
