@@ -43,7 +43,7 @@ import retrofit2.Response;
 public abstract class LoginActivity extends AppCompatActivity {
 
     protected abstract int setLayout();
-    protected abstract Context setApplicationContext();
+    protected abstract Context setContext();
 
     public Context mContext;
     private AlertDialog mAlertDialog;
@@ -286,7 +286,7 @@ public abstract class LoginActivity extends AppCompatActivity {
     private void setApiValues() {
         // Main Application Context
         // Get Base URL from meta-data
-        Context mainApplicationContext = setApplicationContext();
+        Context mainApplicationContext = setContext();
         ApplicationInfo app = null;
         try {
             app = mainApplicationContext.getPackageManager().getApplicationInfo(mainApplicationContext.getPackageName(), PackageManager.GET_META_DATA);
