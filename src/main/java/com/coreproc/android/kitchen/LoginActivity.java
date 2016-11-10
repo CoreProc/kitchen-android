@@ -181,7 +181,7 @@ public abstract class LoginActivity extends AppCompatActivity {
     private void showProgress(final boolean show) {
 
 
-        if(mApplicationHasLayout) {
+        if (mApplicationHasLayout) {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
@@ -405,7 +405,62 @@ public abstract class LoginActivity extends AppCompatActivity {
 
     }
 
+    protected void loginFunction(String userName, String password, final LoginCallback callBack) {
 
+        if (callBack == null) {
+            UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a callback function for login using \"setLoginCallback()\".");
+            return;
+        }
+
+        callBack.onStart();
+
+
+        if (userName.equals("") && password.equals("")) {
+            String title = "Error";
+            String message = "Please fill required fields";
+            UiUtil.showAlertDialog(mContext, title, message, true);
+            return;
+        }
+
+        if (mLoginUrlSegment.length() == 0) {
+            UiUtil.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
+            return;
+        }
+
+        showProgress(true);
+        String auth = mAuthKey;
+        ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
+        SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
+        Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (!response.isSuccessful()) {
+                    showProgress(false);
+                    Log.i("tag", "wrong credentials");
+                    APIError error = ErrorUtil.parsingError(response);
+                    callBack.onError(error.getError());
+                    return;
+                }
+                Log.i("tag", "success");
+                Log.i("json", "response:" + response.body());
+
+                User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
+
+                showProgress(false);
+                callBack.onSuccess(user, response.body());
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                showProgress(false);
+                callBack.onFailed();
+            }
+        });
+
+
+    }
 
 
 }
