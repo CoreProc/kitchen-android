@@ -352,6 +352,8 @@ public abstract class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
+                callBack.onStart();
+
                 String userName = userNameTextView.getText().toString();
                 String password = passwordTextView.getText().toString();
 
@@ -400,7 +402,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                 });
             }
         });
-        
+
     }
 
 
