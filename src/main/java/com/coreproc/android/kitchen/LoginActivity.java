@@ -180,7 +180,6 @@ public abstract class LoginActivity extends AppCompatActivity {
 
     private void showProgress(final boolean show) {
 
-
         if (mApplicationHasLayout) {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
