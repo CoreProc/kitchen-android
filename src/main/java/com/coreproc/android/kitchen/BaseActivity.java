@@ -145,6 +145,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 Log.i("tag", "success");
                 Log.i("json", "response:" + response.body());
 
+                showProgress(false);
                 kitchenCallback.onSuccess(response.body());
             }
 
@@ -187,6 +188,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 Log.i("tag", "success");
                 Log.i("json", "response:" + response.body());
 
+                showProgress(false);
                 kitchenCallback.onSuccess(response.body());
             }
 
