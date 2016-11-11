@@ -24,7 +24,7 @@ import android.support.design.widget.TabLayout;
 
 import com.coreproc.android.kitchen.callbacks.LoginCallback;
 import com.coreproc.android.kitchen.models.APIError;
-import com.coreproc.android.kitchen.models.SampleUserCredentials;
+import com.coreproc.android.kitchen.models.LoginCredentials;
 import com.coreproc.android.kitchen.models.User;
 import com.coreproc.android.kitchen.utils.ErrorUtil;
 import com.coreproc.android.kitchen.utils.RestClient;
@@ -77,7 +77,6 @@ public abstract class LoginActivity extends AppCompatActivity {
         mProgressDialog = new ProgressDialog(mContext);
         mProgressDialog.setMessage(getString(R.string.please_wait));
         mProgressDialog.setCancelable(false);
-
 
         if (!mApplicationHasLayout) {
 
@@ -378,7 +377,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                 showProgress(true);
                 String auth = mAuthKey;
                 ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
-                SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
+                LoginCredentials userCredentials = new LoginCredentials(userName, password);
                 Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
                 call.enqueue(new Callback<JsonObject>() {
                     @Override
@@ -435,7 +434,7 @@ public abstract class LoginActivity extends AppCompatActivity {
         showProgress(true);
         String auth = mAuthKey;
         ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
-        SampleUserCredentials userCredentials = new SampleUserCredentials(userName, password);
+        LoginCredentials userCredentials = new LoginCredentials(userName, password);
         Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
         call.enqueue(new Callback<JsonObject>() {
             @Override

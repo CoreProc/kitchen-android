@@ -1,6 +1,6 @@
 package com.coreproc.android.kitchen.utils;
 
-import com.coreproc.android.kitchen.models.SampleUserCredentials;
+import com.coreproc.android.kitchen.models.LoginCredentials;
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
@@ -18,7 +18,11 @@ public interface ApiInterface {
 
     @POST()
     Call<JsonObject> Login(
-            @Url String url, @Header(AUTHORIZATION) String authorization, @Body SampleUserCredentials userCredentials);
+            @Url String url, @Header(AUTHORIZATION) String authorization, @Body LoginCredentials userCredentials);
+
+    @POST()
+    Call<JsonObject> SignUp(
+            @Url String url, @Header(AUTHORIZATION) String authorization, @Body LoginCredentials userCredentials);
 
 }
 

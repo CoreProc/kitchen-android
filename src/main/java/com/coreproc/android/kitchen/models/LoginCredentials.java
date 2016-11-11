@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by IanBlanco on 10/27/2016.
  */
 
-public class SampleUserCredentials {
+public class LoginCredentials {
 
     @SerializedName("email")
     private String email;
@@ -14,7 +14,7 @@ public class SampleUserCredentials {
     @SerializedName("password")
     private String password;
 
-    public SampleUserCredentials(String email, String password) {
+    public LoginCredentials(String email, String password) {
         this.email = email;
         this.password = password;
     }
