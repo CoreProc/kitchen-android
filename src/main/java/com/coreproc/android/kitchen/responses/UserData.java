@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Created by Kael on 11/16/2016.
  */
 
-public class UserData implements Serializable {
+public class UserData {
 
     @SerializedName("data")
     private User user;

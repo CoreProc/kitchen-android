@@ -22,7 +22,7 @@ public interface ApiInterface {
     String AUTHORIZATION = "X-Authorization";
 
     @POST()
-    KitchenCallback Login(
+    Call<JsonObject> Login(
             @Url String url, @Header(AUTHORIZATION) String authorization, @Body LoginCredentials userCredentials);
 
     @POST()
