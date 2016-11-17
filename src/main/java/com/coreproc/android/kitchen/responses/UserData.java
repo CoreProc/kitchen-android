@@ -13,9 +13,5 @@ import java.io.Serializable;
 public class UserData {
 
     @SerializedName("data")
-    private User user;
-
-    public User getUser() {
-        return user;
-    }
+    public User user;
 }

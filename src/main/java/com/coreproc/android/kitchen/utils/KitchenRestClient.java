@@ -5,6 +5,14 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import com.coreproc.android.kitchen.preferences.Preferences;
+
+import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -27,7 +35,7 @@ public class KitchenRestClient {
         return mRetrofit.create(ApiInterface.class);
     }
 
-    public static <T> T create(Context context, Class<T> customInterface, boolean withAuthorization) {
+    public static <T> T create(final Context context, Class<T> interFace, boolean withAuthorization) {
         if (mRetrofit == null) {
             String baseUrl = "";
             // Get Base URL from meta-data
@@ -46,12 +54,32 @@ public class KitchenRestClient {
                 e.printStackTrace();
             }
 
+            // Check for authorization
+            OkHttpClient client;
+            if (withAuthorization) {
+                client = new OkHttpClient.Builder()
+                        .addInterceptor(new Interceptor() {
+                            @Override
+                            public Response intercept(Chain chain) throws IOException {
+                                Request request = chain.request()
+                                        .newBuilder()
+                                        .addHeader("X-Authorization", Preferences.getString(context, Preferences.API_KEY))
+                                        .build();
+                                return chain.proceed(request);
+                            }
+                        }).build();
+            } else {
+                client = new OkHttpClient();
+            }
+
+
             mRetrofit = new Retrofit.Builder()
+                    .client(client)
                     .baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
-        return mRetrofit.create(customInterface);
+        return mRetrofit.create(interFace);
     }
 
     public static Retrofit getmRetrofit(){

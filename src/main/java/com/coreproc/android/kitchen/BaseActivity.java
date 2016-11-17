@@ -29,10 +29,11 @@ import retrofit2.Response;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    protected abstract Context setContext();
+    protected abstract void setContext();
     protected abstract int setLayout();
 
-    private Context mContext;
+    protected Context mContext;
+    protected Context mBaseContext;
     private String mBaseUrl;
     private String mAuthKey;
     private String mLoginUrlSegment;
@@ -47,14 +48,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView((setLayout() == 0) ? R.layout.activity_base : setLayout());
 
-        mContext = this;
+        mBaseContext = this;
         mActivityHasLayout = (setLayout() != 0);
 
+        // Sets the context of the main application context
+        this.setContext();
+
         if (!mActivityHasLayout) {
-            UiUtil.showAlertDialog(mContext, "No Layout Found", "Please set a layout resource.");
+            UiUtil.showAlertDialog(mBaseContext, "No Layout Found", "Please set a layout resource.");
         }
 
-        mProgressDialog = new ProgressDialog(mContext);
+        mProgressDialog = new ProgressDialog(mBaseContext);
         mProgressDialog.setMessage(getString(R.string.please_wait));
         mProgressDialog.setCancelable(false);
 
@@ -63,8 +67,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void setApiValues() {
         // Main Application Context
+
         // Get Base URL from meta-data
-        Context mainApplicationContext = setContext();
+        Context mainApplicationContext = mContext;
         ApplicationInfo app = null;
         try {
             app = mainApplicationContext.getPackageManager().getApplicationInfo(mainApplicationContext.getPackageName(), PackageManager.GET_META_DATA);
@@ -72,7 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mBaseUrl = bundle.getString("base-url", "");
 
             if (mBaseUrl.length() == 0) {
-                UiUtil.showAlertDialog(mContext, "URL not found", "Base URL not found in manifest. Please declare a meta-data value with name \"base-url\".");
+                UiUtil.showAlertDialog(mBaseContext, "URL not found", "Base URL not found in manifest. Please declare a meta-data value with name \"base-url\".");
             }
 
         } catch (PackageManager.NameNotFoundException e) {
@@ -113,12 +118,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void postRequest(JsonObject jsonObject, final KitchenCallback kitchenCallback) {
 
         if (jsonObject == null) {
-            UiUtil.showAlertDialog(mContext, "Parameters Missing", "Please set parameter as JsonObject.");
+            UiUtil.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as JsonObject.");
             return;
         }
 
         if (kitchenCallback == null) {
-            UiUtil.showAlertDialog(mContext, "Callback Missing", "Please set a callback.");
+            UiUtil.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
             return;
         }
 
@@ -156,12 +161,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void postRequest(HashMap<String, Object> params, final KitchenCallback kitchenCallback) {
 
         if (params == null) {
-            UiUtil.showAlertDialog(mContext, "Parameters Missing", "Please set parameter as HashMap<String, Object>.");
+            UiUtil.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as HashMap<String, Object>.");
             return;
         }
 
         if (kitchenCallback == null) {
-            UiUtil.showAlertDialog(mContext, "Callback Missing", "Please set a callback.");
+            UiUtil.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
             return;
         }
 
@@ -198,12 +203,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void putRequest(HashMap<String, Object> params, final KitchenCallback kitchenCallback) {
 
         if (params == null) {
-            UiUtil.showAlertDialog(mContext, "Parameters Missing", "Please set parameter as HashMap<String, Object>.");
+            UiUtil.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as HashMap<String, Object>.");
             return;
         }
 
         if (kitchenCallback == null) {
-            UiUtil.showAlertDialog(mContext, "Callback Missing", "Please set a callback.");
+            UiUtil.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
             return;
         }
 
@@ -240,12 +245,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void putRequest(JsonObject jsonObject, final KitchenCallback kitchenCallback) {
 
         if (jsonObject == null) {
-            UiUtil.showAlertDialog(mContext, "Parameters Missing", "Please set parameter as JsonObject.");
+            UiUtil.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as JsonObject.");
             return;
         }
 
         if (kitchenCallback == null) {
-            UiUtil.showAlertDialog(mContext, "Callback Missing", "Please set a callback.");
+            UiUtil.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
             return;
         }
 
@@ -286,7 +291,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mProgressDialog.dismiss();
         }
 
-        mProgressDialog = new ProgressDialog(mContext);
+        mProgressDialog = new ProgressDialog(mBaseContext);
         mProgressDialog.setMessage(getString(R.string.please_wait));
         mProgressDialog.setCancelable(false);
 
