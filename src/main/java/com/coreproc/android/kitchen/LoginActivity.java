@@ -392,10 +392,10 @@ public abstract class LoginActivity extends AppCompatActivity {
                         Log.i("tag", "success");
                         Log.i("json", "response:" + response.body());
 
-                        User user = new Gson().fromJson(response.body().get("data").getAsJsonObject(), User.class);
+                        UserData user = new Gson().fromJson(response.body().getAsJsonObject(), UserData.class);
 
                         showProgress(false);
-                        mLoginCallback.onSuccess(user, response.body());
+                        mLoginCallback.onSuccess(user.getUser(), response.body());
 
                     }
 
@@ -462,8 +462,6 @@ public abstract class LoginActivity extends AppCompatActivity {
                 callBack.onFailed();
             }
         });
-
-
     }
 
     @Override
