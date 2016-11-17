@@ -1,5 +1,6 @@
 package com.coreproc.android.kitchen.utils;
 
+import com.coreproc.android.kitchen.callbacks.KitchenCallback;
 import com.coreproc.android.kitchen.models.LoginCredentials;
 import com.google.gson.JsonObject;
 
@@ -21,7 +22,7 @@ public interface ApiInterface {
     String AUTHORIZATION = "X-Authorization";
 
     @POST()
-    Call<JsonObject> Login(
+    KitchenCallback Login(
             @Url String url, @Header(AUTHORIZATION) String authorization, @Body LoginCredentials userCredentials);
 
     @POST()

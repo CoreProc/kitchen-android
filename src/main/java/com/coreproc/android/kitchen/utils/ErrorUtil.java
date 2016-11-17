@@ -17,7 +17,7 @@ import retrofit2.Response;
 public class ErrorUtil {
     public static APIError parsingError(Response<?> response) {
         Converter<ResponseBody, APIError> converter =
-                RestClient.getmRetrofit()
+                KitchenRestClient.getmRetrofit()
                         .responseBodyConverter(APIError.class, new Annotation[0]);
 
         APIError error = null;

@@ -27,7 +27,7 @@ import com.coreproc.android.kitchen.models.APIError;
 import com.coreproc.android.kitchen.models.LoginCredentials;
 import com.coreproc.android.kitchen.models.User;
 import com.coreproc.android.kitchen.utils.ErrorUtil;
-import com.coreproc.android.kitchen.utils.RestClient;
+import com.coreproc.android.kitchen.utils.KitchenRestClient;
 import com.coreproc.android.kitchen.utils.ApiInterface;
 import com.coreproc.android.kitchen.utils.UiUtil;
 import com.google.gson.Gson;
@@ -375,7 +375,7 @@ public abstract class LoginActivity extends AppCompatActivity {
 
                 showProgress(true);
                 String auth = mAuthKey;
-                ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
+                ApiInterface apiInterface = KitchenRestClient.getmApiInterface(mBaseUrl);
                 LoginCredentials userCredentials = new LoginCredentials(userName, password);
                 Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
                 call.enqueue(new Callback<JsonObject>() {
@@ -432,7 +432,7 @@ public abstract class LoginActivity extends AppCompatActivity {
 
         showProgress(true);
         String auth = mAuthKey;
-        ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
+        ApiInterface apiInterface = KitchenRestClient.getmApiInterface(mBaseUrl);
         LoginCredentials userCredentials = new LoginCredentials(userName, password);
         Call<JsonObject> call = apiInterface.Login(mLoginUrlSegment, auth, userCredentials);
         call.enqueue(new Callback<JsonObject>() {

@@ -1,24 +1,19 @@
 package com.coreproc.android.kitchen;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
 import com.coreproc.android.kitchen.callbacks.KitchenCallback;
 import com.coreproc.android.kitchen.models.APIError;
 import com.coreproc.android.kitchen.utils.ApiInterface;
 import com.coreproc.android.kitchen.utils.ErrorUtil;
-import com.coreproc.android.kitchen.utils.RestClient;
+import com.coreproc.android.kitchen.utils.KitchenRestClient;
 import com.coreproc.android.kitchen.utils.UiUtil;
 import com.google.gson.JsonObject;
 
@@ -130,7 +125,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         showProgress(true);
         kitchenCallback.onStart();
         String authKey = mAuthKey;
-        ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
+        ApiInterface apiInterface = KitchenRestClient.getmApiInterface(mBaseUrl);
         Call<JsonObject> call = apiInterface.PostRequest(mLoginUrlSegment, authKey, jsonObject);
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -173,7 +168,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         showProgress(true);
         kitchenCallback.onStart();
         String authKey = mAuthKey;
-        ApiInterface apiInterface = RestClient.getmApiInterface(mBaseUrl);
+        ApiInterface apiInterface = KitchenRestClient.getmApiInterface(mBaseUrl);
         Call<JsonObject> call = apiInterface.PostRequest(mLoginUrlSegment, authKey, params);
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -198,6 +193,91 @@ public abstract class BaseActivity extends AppCompatActivity {
                 kitchenCallback.onFailed();
             }
         });
+    }
+
+    protected void putRequest(HashMap<String, Object> params, final KitchenCallback kitchenCallback) {
+
+        if (params == null) {
+            UiUtil.showAlertDialog(mContext, "Parameters Missing", "Please set parameter as HashMap<String, Object>.");
+            return;
+        }
+
+        if (kitchenCallback == null) {
+            UiUtil.showAlertDialog(mContext, "Callback Missing", "Please set a callback.");
+            return;
+        }
+
+        showProgress(true);
+        kitchenCallback.onStart();
+        String authKey = mAuthKey;
+        ApiInterface apiInterface = KitchenRestClient.getmApiInterface(mBaseUrl);
+        Call<JsonObject> call = apiInterface.PutRequest(mLoginUrlSegment, authKey, params);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (!response.isSuccessful()) {
+                    showProgress(false);
+                    Log.i("tag", "wrong credentials");
+                    APIError error = ErrorUtil.parsingError(response);
+                    kitchenCallback.onError(error.getError());
+                    return;
+                }
+                Log.i("tag", "success");
+                Log.i("json", "response:" + response.body());
+
+                showProgress(false);
+                kitchenCallback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                showProgress(false);
+                kitchenCallback.onFailed();
+            }
+        });
+    }
+
+    protected void putRequest(JsonObject jsonObject, final KitchenCallback kitchenCallback) {
+
+        if (jsonObject == null) {
+            UiUtil.showAlertDialog(mContext, "Parameters Missing", "Please set parameter as JsonObject.");
+            return;
+        }
+
+        if (kitchenCallback == null) {
+            UiUtil.showAlertDialog(mContext, "Callback Missing", "Please set a callback.");
+            return;
+        }
+
+        showProgress(true);
+        kitchenCallback.onStart();
+        String authKey = mAuthKey;
+        ApiInterface apiInterface = KitchenRestClient.getmApiInterface(mBaseUrl);
+        Call<JsonObject> call = apiInterface.PutRequest(mLoginUrlSegment, authKey, jsonObject);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (!response.isSuccessful()) {
+                    showProgress(false);
+                    Log.i("tag", "wrong credentials");
+                    APIError error = ErrorUtil.parsingError(response);
+                    kitchenCallback.onError(error.getError());
+                    return;
+                }
+                Log.i("tag", "success");
+                Log.i("json", "response:" + response.body());
+
+                showProgress(false);
+                kitchenCallback.onSuccess(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                showProgress(false);
+                kitchenCallback.onFailed();
+            }
+        });
+
     }
 
     private void showProgress(final boolean show) {
