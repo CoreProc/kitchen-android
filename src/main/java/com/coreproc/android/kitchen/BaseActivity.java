@@ -32,16 +32,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void setContext();
     protected abstract int setLayout();
 
-    protected Context mContext;
-    protected Context mBaseContext;
-    private String mBaseUrl;
-    private String mAuthKey;
-    private String mLoginUrlSegment;
-    private String mSignUpUrlSegment;
+    public Context mContext;
+    public Context mBaseContext;
+    public String mBaseUrl;
+    public String mAuthKey;
+    public String mLoginUrlSegment;
+    public String mSignUpUrlSegment;
     private boolean mActivityHasLayout = false;
 
     // UI References
-    private ProgressDialog mProgressDialog;
+    protected ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

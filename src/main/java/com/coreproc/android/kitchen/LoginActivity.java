@@ -44,19 +44,20 @@ import retrofit2.Response;
 public abstract class LoginActivity extends AppCompatActivity {
 
     protected abstract int setLayout();
-    protected abstract Context setContext();
+    protected abstract void setContext();
 
     public Context mContext;
+    public Context mLoginContext;
     private AlertDialog mAlertDialog;
     private ProgressDialog mProgressDialog;
     private boolean mApplicationHasLayout = false;
 
     // API Values
-    protected String mBaseUrl;
-    protected String mAuthKey;
-    protected String mLoginUrlSegment;
-    protected String mSignUpUrlSegment;
-    protected LoginCallback mLoginCallback = null;
+    public String mBaseUrl;
+    public String mAuthKey;
+    public String mLoginUrlSegment;
+    public String mSignUpUrlSegment;
+    public LoginCallback mLoginCallback = null;
 
     // UI references.
     private EditText mEmailView;
@@ -71,6 +72,7 @@ public abstract class LoginActivity extends AppCompatActivity {
 
         setContentView(setLayout() == 0 ? R.layout.login_layout : setLayout());
         mContext = this;
+        setContext();
 
         mApplicationHasLayout = setLayout() != 0;
         setApiValues();
@@ -285,7 +287,7 @@ public abstract class LoginActivity extends AppCompatActivity {
     private void setApiValues() {
         // Main Application Context
         // Get Base URL from meta-data
-        Context mainApplicationContext = setContext();
+        Context mainApplicationContext = mLoginContext;
         ApplicationInfo app = null;
         try {
             app = mainApplicationContext.getPackageManager().getApplicationInfo(mainApplicationContext.getPackageName(), PackageManager.GET_META_DATA);
@@ -329,10 +331,6 @@ public abstract class LoginActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    protected void registerUser() {
-
     }
 
     protected void loginUser(final TextView userNameTextView, final TextView passwordTextView, Button loginButton, final LoginCallback callBack) {
@@ -395,7 +393,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                         UserData user = new Gson().fromJson(response.body().getAsJsonObject(), UserData.class);
 
                         showProgress(false);
-                        mLoginCallback.onSuccess(user.getUser(), response.body());
+                        mLoginCallback.onSuccess(user.user, response.body());
 
                     }
 
@@ -452,7 +450,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                 UserData user = new Gson().fromJson(response.body().getAsJsonObject(), UserData.class);
 
                 showProgress(false);
-                callBack.onSuccess(user.getUser(), response.body());
+                callBack.onSuccess(user.user, response.body());
 
             }
 
