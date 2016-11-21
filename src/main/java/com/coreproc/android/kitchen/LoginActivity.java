@@ -47,17 +47,17 @@ public abstract class LoginActivity extends AppCompatActivity {
     protected abstract void setContext();
 
     public Context mContext;
-    public Context mLoginContext;
+    protected Context mLoginContext;
     private AlertDialog mAlertDialog;
     private ProgressDialog mProgressDialog;
     private boolean mApplicationHasLayout = false;
 
     // API Values
-    public String mBaseUrl;
-    public String mAuthKey;
-    public String mLoginUrlSegment;
-    public String mSignUpUrlSegment;
-    public LoginCallback mLoginCallback = null;
+    protected String mBaseUrl;
+    protected String mAuthKey;
+    protected String mLoginUrlSegment;
+    protected String mSignUpUrlSegment;
+    protected LoginCallback mLoginCallback = null;
 
     // UI references.
     private EditText mEmailView;
@@ -175,10 +175,6 @@ public abstract class LoginActivity extends AppCompatActivity {
     public void showOnlyLoginForm(boolean show) {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setVisibility((show) ? View.GONE : View.VISIBLE);
-    }
-
-    public void setLoginCallback(LoginCallback loginCallback) {
-        mLoginCallback = loginCallback;
     }
 
     private void showProgress(final boolean show) {
@@ -350,7 +346,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                     mLoginCallback = callBack;
 
                     if (mLoginCallback == null) {
-                        UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN callback using \"setLoginCallback()\".");
+                        UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN CALLBACK (mLoginCallback).");
                         return;
                     }
                 }
