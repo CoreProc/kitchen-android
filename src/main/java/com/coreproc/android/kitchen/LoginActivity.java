@@ -89,25 +89,11 @@ public abstract class LoginActivity extends AppCompatActivity {
 
         mContext = this;
         setContext();
-
-
         setApiValues();
 
         mProgressDialog = new ProgressDialog(mContext);
         mProgressDialog.setMessage(getString(R.string.please_wait));
         mProgressDialog.setCancelable(false);
-
-
-//        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(mToolbar);
-//        // Get the ActionBar here to configure the way it behaves.
-//        final ActionBar mActionBar = getSupportActionBar();
-//        //ab.setHomeAsUpIndicator(R.drawable.ic_menu); // set a custom icon for the default home button
-//        mActionBar.setDisplayShowHomeEnabled(true); // show or hide the default home button
-//        mActionBar.setDisplayHomeAsUpEnabled(true);
-//        mActionBar.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
-//        mActionBar.setDisplayShowTitleEnabled(false); // disable the default title element here (for centered title)
-
     }
 
     private void prepareTabs() {
@@ -183,6 +169,23 @@ public abstract class LoginActivity extends AppCompatActivity {
     public void showOnlyLoginForm(boolean show) {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setVisibility((show) ? View.GONE : View.VISIBLE);
+    }
+
+    public void showProgressDialog(boolean show) {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+
+        mProgressDialog = new ProgressDialog(mContext);
+        mProgressDialog.setMessage(getString(R.string.please_wait));
+        mProgressDialog.setCancelable(false);
+
+        if (show) {
+            mProgressDialog.show();
+        } else {
+            if (mProgressDialog.isShowing())
+                mProgressDialog.hide();
+        }
     }
 
     private void showProgress(final boolean show) {
