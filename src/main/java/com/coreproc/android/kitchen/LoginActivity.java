@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -69,27 +70,34 @@ public abstract class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mApplicationHasLayout = setLayout() != 0;
+
+        if (!mApplicationHasLayout)
+            setTheme(R.style.NoActionBar);
 
         setContentView(setLayout() == 0 ? R.layout.login_layout : setLayout());
+
+        if (!mApplicationHasLayout) {
+            // No layout; will use the kitchen layout
+            Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(mToolbar);
+
+            prepareTabs();
+            prepareLoginForm();
+            prepareSignUp();
+        }
+
         mContext = this;
         setContext();
 
-        mApplicationHasLayout = setLayout() != 0;
+
         setApiValues();
 
         mProgressDialog = new ProgressDialog(mContext);
         mProgressDialog.setMessage(getString(R.string.please_wait));
         mProgressDialog.setCancelable(false);
 
-        if (!mApplicationHasLayout) {
 
-            // No layout; will use the kitchen layout
-            getSupportActionBar().hide();
-            prepareTabs();
-            prepareLoginForm();
-            prepareSignUp();
-
-        }
 //        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(mToolbar);
 //        // Get the ActionBar here to configure the way it behaves.

@@ -42,4 +42,14 @@
         <item name="android:background">@drawable/danger_edit_text</item>
     </style>
 
+
+    <!-- ACTIVITY -->
+    <style name="NoActionBar" parent="AppTheme">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
 </resources>
