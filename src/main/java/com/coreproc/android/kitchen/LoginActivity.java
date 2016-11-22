@@ -27,6 +27,7 @@ import com.coreproc.android.kitchen.callbacks.LoginCallback;
 import com.coreproc.android.kitchen.models.APIError;
 import com.coreproc.android.kitchen.models.LoginCredentials;
 import com.coreproc.android.kitchen.models.User;
+import com.coreproc.android.kitchen.preferences.Preferences;
 import com.coreproc.android.kitchen.responses.UserData;
 import com.coreproc.android.kitchen.utils.ErrorUtil;
 import com.coreproc.android.kitchen.utils.KitchenRestClient;
@@ -455,6 +456,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                 Log.i("json", "response:" + response.body());
 
                 UserData user = new Gson().fromJson(response.body().getAsJsonObject(), UserData.class);
+                Preferences.setString(mContext, "apiKey", response.headers().get("X-Authorization"));
 
                 showProgress(false);
                 callBack.onSuccess(user.user, response.body());
