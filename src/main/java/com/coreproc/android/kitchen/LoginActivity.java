@@ -456,7 +456,7 @@ public abstract class LoginActivity extends AppCompatActivity {
                 Log.i("json", "response:" + response.body());
 
                 UserData user = new Gson().fromJson(response.body().getAsJsonObject(), UserData.class);
-                Preferences.setString(mContext, "apiKey", response.headers().get("X-Authorization"));
+                Preferences.setString(mContext, Preferences.API_KEY, response.headers().get("X-Authorization"));
 
                 showProgress(false);
                 callBack.onSuccess(user.user, response.body());
