@@ -43,7 +43,7 @@ import retrofit2.Response;
 /**
  * Created by IanBlanco on 9/7/2016.
  */
-public abstract class LoginActivity extends AppCompatActivity {
+public abstract class UserActivity extends AppCompatActivity {
 
     protected abstract int setLayout();
     protected abstract void setContext();
