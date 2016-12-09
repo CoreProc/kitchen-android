@@ -1,0 +1,63 @@
+stages:
+  - build
+  - review
+
+variables:
+  STAGING_DIR: bridal-gallery-android
+
+buildDebug:
+  stage: build
+  script:
+    - chmod +x gradlew
+    - ./gradlew assembleDebug
+  except:
+    - master
+  tags:
+    - cp-sgp1-staging
+
+buildProduction:
+  stage: build
+  script:
+    - chmod +x gradlew
+    - ./gradlew assembleRelease
+  only:
+    - master
+  tags:
+    - cp-sgp1-staging
+
+review:
+  stage: review
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - mkdir -p /home/forge/ci.coreproc.com/android/$STAGING_DIR/$CI_BUILD_REF_NAME
+    - rsync -av --delete ./app/build/outputs/apk /home/forge/ci.coreproc.com/android/$STAGING_DIR/$CI_BUILD_REF_NAME
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    url: http://ci.coreproc.com/android/$STAGING_DIR/$CI_BUILD_REF_NAME
+    on_stop: stop_review
+  only:
+    - branches
+  except:
+    - master
+    - develop
+  tags:
+    - cp-sgp1-staging
+
+stop_review:
+  stage: review
+  script:
+    - rm -rf /home/forge/ci.coreproc.com/android/$STAGING_DIR/$CI_BUILD_REF_NAME
+  variables:
+    GIT_STRATEGY: none
+  when: manual
+  only:
+    - branches
+  except:
+    - master
+    - develop
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    action: stop
+  tags:
+    - cp-sgp1-staging
