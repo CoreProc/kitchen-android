@@ -13,6 +13,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -36,6 +37,10 @@ public class KitchenRestClient {
     }
 
     public static <T> T create(final Context context, Class<T> interFace, boolean withAuthorization) {
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         if (mRetrofit == null) {
             String baseUrl = "";
             // Get Base URL from meta-data
@@ -58,6 +63,7 @@ public class KitchenRestClient {
             OkHttpClient client;
             if (withAuthorization) {
                 client = new OkHttpClient.Builder()
+                        .addInterceptor(interceptor)
                         .addInterceptor(new Interceptor() {
                             @Override
                             public Response intercept(Chain chain) throws IOException {
@@ -69,7 +75,7 @@ public class KitchenRestClient {
                             }
                         }).build();
             } else {
-                client = new OkHttpClient();
+                client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
             }
 
 
