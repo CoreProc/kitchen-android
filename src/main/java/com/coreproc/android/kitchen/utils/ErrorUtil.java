@@ -1,6 +1,8 @@
 package com.coreproc.android.kitchen.utils;
 
 
+import android.util.Log;
+
 import com.coreproc.android.kitchen.models.APIError;
 
 import java.io.IOException;
@@ -16,18 +18,19 @@ import retrofit2.Response;
 
 public class ErrorUtil {
     public static APIError parsingError(Response<?> response) {
-        Converter<ResponseBody, APIError> converter =
+
+        APIError apiError = null;
+        Converter<ResponseBody, APIError> converter = null;
+
+        converter =
                 KitchenRestClient.getmRetrofit()
                         .responseBodyConverter(APIError.class, new Annotation[0]);
-
-        APIError error = null;
-
         try {
-            error = converter.convert(response.errorBody());
+            apiError = converter.convert(response.errorBody());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("ERROR PARSING", "" + e.getMessage());
         }
 
-        return error;
+        return apiError;
     }
 }
