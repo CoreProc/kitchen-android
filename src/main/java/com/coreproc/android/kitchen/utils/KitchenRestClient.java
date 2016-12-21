@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.coreproc.android.kitchen.preferences.Preferences;
 
@@ -61,23 +62,22 @@ public class KitchenRestClient {
 
             // Check for authorization
             OkHttpClient client;
-            if (withAuthorization) {
-                client = new OkHttpClient.Builder()
-                        .addInterceptor(interceptor)
-                        .addInterceptor(new Interceptor() {
-                            @Override
-                            public Response intercept(Chain chain) throws IOException {
-                                Request request = chain.request()
-                                        .newBuilder()
-                                        .addHeader("X-Authorization", Preferences.getString(context, Preferences.API_KEY))
-                                        .build();
-                                return chain.proceed(request);
-                            }
-                        }).build();
-            } else {
-                client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-            }
 
+            final String authKey = Preferences.getString(context, Preferences.API_KEY);
+            Log.d("authkey", "HELLO " + authKey);
+
+            client = new OkHttpClient.Builder()
+                    .addInterceptor(interceptor)
+                    .addInterceptor(new Interceptor() {
+                        @Override
+                        public Response intercept(Chain chain) throws IOException {
+                            Request request = chain.request()
+                                    .newBuilder()
+                                    .addHeader("X-Authorization", authKey)
+                                    .build();
+                            return chain.proceed(request);
+                        }
+                    }).build();
 
             mRetrofit = new Retrofit.Builder()
                     .client(client)
