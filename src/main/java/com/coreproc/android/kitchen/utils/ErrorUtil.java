@@ -4,6 +4,10 @@ package com.coreproc.android.kitchen.utils;
 import android.util.Log;
 
 import com.coreproc.android.kitchen.models.APIError;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -28,7 +32,12 @@ public class ErrorUtil {
         try {
             apiError = converter.convert(response.errorBody());
         } catch (IOException e) {
-            Log.e("ERROR PARSING", "" + e.getMessage());
+            apiError = new APIError();
+            APIError.Error error = new APIError.Error();
+            error.code = "500";
+            error.message = new JsonParser().parse("{\"message\" : \"An error occured.\"}");
+            error.httpCode = "GEN-ERROR";
+            apiError.error = error;
         }
 
         return apiError;

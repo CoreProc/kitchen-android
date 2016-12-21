@@ -38,7 +38,7 @@ public class APIError {
 
         @SerializedName("message")
         @Nullable
-        protected JsonElement message;
+        public JsonElement message;
 
         public String getCode() {
             return code;
