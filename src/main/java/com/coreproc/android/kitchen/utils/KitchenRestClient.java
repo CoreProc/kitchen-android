@@ -74,7 +74,7 @@ public class KitchenRestClient {
             pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             appVersionName = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            appVersionName = "1.0.0";
+            appVersionName = "N/A";
         }
 
         final String osVersion = android.os.Build.VERSION.RELEASE;
