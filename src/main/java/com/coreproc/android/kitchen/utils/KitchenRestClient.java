@@ -2,8 +2,11 @@ package com.coreproc.android.kitchen.utils;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.coreproc.android.kitchen.preferences.Preferences;
@@ -65,28 +68,36 @@ public class KitchenRestClient {
         final String authKey = Preferences.getString(context, Preferences.API_KEY);
         Log.d("authkey", "HELLO " + authKey);
 
-        if (withAuthorization) {
-
-            client = new OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .addInterceptor(new Interceptor() {
-                        @Override
-                        public Response intercept(Chain chain) throws IOException {
-                            Request request = chain.request()
-                                    .newBuilder()
-                                    .addHeader("X-Authorization", authKey)
-                                    .build();
-                            return chain.proceed(request);
-                        }
-                    }).build();
-
-
-        } else {
-
-            client = new OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build();
+        PackageInfo pInfo = null;
+        String appVersionName = "";
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            appVersionName = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            appVersionName = "1.0.0";
         }
+
+        final String osVersion = android.os.Build.VERSION.RELEASE;
+
+
+        final String finalAppVersionName = appVersionName;
+        client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request()
+                                .newBuilder()
+                                .addHeader("X-Authorization", authKey)
+                                .addHeader("X-OS", "android")
+                                .addHeader("X-App-Version", finalAppVersionName)
+                                .addHeader("X-OS-Version", osVersion)
+                                .addHeader("X-Device-Name", getDeviceName())
+                                .build();
+                        return chain.proceed(request);
+                    }
+                }).build();
+
 
         mRetrofit = new Retrofit.Builder()
                 .client(client)
@@ -99,6 +110,41 @@ public class KitchenRestClient {
 
     public static Retrofit getmRetrofit() {
         return mRetrofit;
+    }
+
+    /** Returns the consumer friendly device name */
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private static String capitalize(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        char[] arr = str.toCharArray();
+        boolean capitalizeNext = true;
+
+//        String phrase = "";
+        StringBuilder phrase = new StringBuilder();
+        for (char c : arr) {
+            if (capitalizeNext && Character.isLetter(c)) {
+//                phrase += Character.toUpperCase(c);
+                phrase.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+                continue;
+            } else if (Character.isWhitespace(c)) {
+                capitalizeNext = true;
+            }
+//            phrase += c;
+            phrase.append(c);
+        }
+
+        return phrase.toString();
     }
 
 }
