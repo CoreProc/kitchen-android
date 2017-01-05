@@ -2,7 +2,9 @@ package com.coreproc.android.kitchen;
 
 import android.text.format.DateUtils;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by willm on 1/5/2017.
@@ -10,9 +12,19 @@ import java.util.Date;
 
 public class Kitchen {
 
-    public static String toHumanTime(long time) {
+    public static CharSequence getRelativeTime(final Date date) {
         long now = System.currentTimeMillis();
-        return DateUtils.getRelativeTimeSpanString(time, now, DateUtils.DAY_IN_MILLIS).toString();
+        int gmtOffset = TimeZone.getDefault().getRawOffset();
+        long utcTimestamp = date.getTime();
+        long localTimestamp = utcTimestamp + gmtOffset;
+        Calendar c = Calendar.getInstance();
+        long localNow = c.getTimeInMillis();
+
+        return DateUtils.getRelativeTimeSpanString(
+                    localTimestamp,
+                    localNow,
+                    DateUtils.MINUTE_IN_MILLIS,
+                    DateUtils.FORMAT_ABBREV_RELATIVE);
     }
 
 }
