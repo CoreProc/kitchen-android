@@ -20,11 +20,15 @@ public class Kitchen {
         Calendar c = Calendar.getInstance();
         long localNow = c.getTimeInMillis();
 
-        return DateUtils.getRelativeTimeSpanString(
-                    localTimestamp,
-                    localNow,
-                    DateUtils.MINUTE_IN_MILLIS,
-                    DateUtils.FORMAT_ABBREV_RELATIVE);
+        CharSequence res = DateUtils.getRelativeTimeSpanString(
+                localTimestamp,
+                localNow,
+                DateUtils.MINUTE_IN_MILLIS);
+        res = ((res + "").replace("In ", ""));
+        res = ((res + "").equalsIgnoreCase("0 minutes ago") ? "Just now" : res);
+        res = ((res + "").equalsIgnoreCase("0 minutes") ? "Just now" : res);
+
+        return res;
     }
 
 }
