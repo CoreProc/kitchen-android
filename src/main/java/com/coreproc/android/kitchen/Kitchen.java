@@ -2,6 +2,8 @@ package com.coreproc.android.kitchen;
 
 import android.text.format.DateUtils;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -13,7 +15,11 @@ import java.util.TimeZone;
 public class Kitchen {
 
     public static CharSequence getRelativeTime(final Date date) {
-        long now = System.currentTimeMillis();
+
+        PrettyTime prettyTime = new PrettyTime();
+        return prettyTime.format(date);
+
+        /*long now = System.currentTimeMillis();
         int gmtOffset = TimeZone.getDefault().getRawOffset();
         long utcTimestamp = date.getTime();
         long localTimestamp = utcTimestamp + gmtOffset;
@@ -28,7 +34,7 @@ public class Kitchen {
         res = ((res + "").equalsIgnoreCase("0 minutes ago") ? "Just now" : res);
         res = ((res + "").equalsIgnoreCase("0 minutes") ? "Just now" : res);
 
-        return res;
+        return res; */
     }
 
 }
