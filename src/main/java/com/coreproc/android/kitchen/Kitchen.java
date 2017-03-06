@@ -14,10 +14,12 @@ import java.util.TimeZone;
 
 public class Kitchen {
 
-    public static CharSequence getRelativeTime(final Date date) {
+    public static String getRelativeTime(final Date date) {
 
         PrettyTime prettyTime = new PrettyTime();
-        return prettyTime.format(date);
+        String dateStr = "" + prettyTime.format(date);
+        dateStr = dateStr.contains("moments") ? "Just now" : dateStr;
+        return dateStr;
 
         /*long now = System.currentTimeMillis();
         int gmtOffset = TimeZone.getDefault().getRawOffset();
