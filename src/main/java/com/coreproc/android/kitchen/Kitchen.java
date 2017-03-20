@@ -1,17 +1,33 @@
 package com.coreproc.android.kitchen;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Base64;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.coreproc.android.kitchen.preferences.Preferences;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.kosalgeek.android.photoutil.PhotoLoader;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -79,6 +95,118 @@ public class Kitchen {
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
+    }
+
+    public static boolean isUserLoggedIn(Context context) {
+        return Preferences.getString(context, Preferences.API_KEY).length() != 0;
+    }
+
+    public static String getMetadataValue(Context context, String key) {
+        ApplicationInfo app = null;
+        try {
+            app = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = app.metaData;
+            return bundle.getString(key, "");
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public static JsonObject loadJsonObjectFromAssets(Context context, String fileName) {
+        String json = null;
+        try {
+            InputStream is = context.getAssets().open("json/" + fileName + ".json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+            return generateJsonObjectFromString(json);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static JsonObject generateJsonObjectFromString(String jsonString) {
+        return new JsonParser().parse(jsonString).getAsJsonObject();
+    }
+
+    public static String loadJsonStringFromAssets(Context context, String fileName) {
+        String json = null;
+        try {
+            InputStream is = context.getAssets().open("json/" + fileName + ".json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+            return json;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String loadStringFromAssets(Context context, String file) {
+        String json = "";
+        try {
+            InputStream is = context.getAssets().open("rawstrings/" + file);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+            return json;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return "";
+        }
+    }
+
+    public static boolean isEmailValid(String email) {
+        return email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    public static boolean validateInputs(ViewGroup mainView) {
+        for (int i = 0; i < mainView.getChildCount(); i++) {
+            View view = mainView.getChildAt(i);
+            if (view instanceof EditText) {
+                EditText editText = (EditText) view;
+
+                // validate all input fields in view
+                if (editText.getText().toString().isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+
+    }
+
+    private static ArrayList<TextView> getTextViews(ViewGroup root) {
+        ArrayList<TextView> views = new ArrayList<>();
+        for (int i = 0; i < root.getChildCount(); i++) {
+            View v = root.getChildAt(i);
+            if (v instanceof TextView) {
+                views.add((TextView) v);
+            } else if (v instanceof ViewGroup) {
+                views.addAll(getTextViews((ViewGroup) v));
+            }
+        }
+        return views;
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }

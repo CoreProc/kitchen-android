@@ -8,7 +8,7 @@ import android.support.v7.app.AlertDialog;
  * Created by Kael on 11/10/2016.
  */
 
-public class UiUtil {
+public class KitchenUiUtils {
 
     public static  void showAlertDialog(AlertDialog alertDialog) {
 

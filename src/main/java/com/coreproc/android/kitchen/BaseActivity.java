@@ -14,7 +14,7 @@ import com.coreproc.android.kitchen.models.APIError;
 import com.coreproc.android.kitchen.utils.ApiInterface;
 import com.coreproc.android.kitchen.utils.ErrorUtil;
 import com.coreproc.android.kitchen.utils.KitchenRestClient;
-import com.coreproc.android.kitchen.utils.UiUtil;
+import com.coreproc.android.kitchen.utils.KitchenUiUtils;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -55,7 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         this.setContext();
 
         if (!mActivityHasLayout) {
-            UiUtil.showAlertDialog(mBaseContext, "No Layout Found", "Please set a layout resource.");
+            KitchenUiUtils.showAlertDialog(mBaseContext, "No Layout Found", "Please set a layout resource.");
         }
 
         mProgressDialog = new ProgressDialog(mBaseContext);
@@ -77,7 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mBaseUrl = bundle.getString("base-url", "");
 
             if (mBaseUrl.length() == 0) {
-                UiUtil.showAlertDialog(mBaseContext, "URL not found", "Base URL not found in manifest. Please declare a meta-data value with name \"base-url\".");
+                KitchenUiUtils.showAlertDialog(mBaseContext, "URL not found", "Base URL not found in manifest. Please declare a meta-data value with name \"base-url\".");
             }
 
         } catch (PackageManager.NameNotFoundException e) {
@@ -118,12 +118,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void postRequest(JsonObject jsonObject, final KitchenCallback kitchenCallback) {
 
         if (jsonObject == null) {
-            UiUtil.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as JsonObject.");
+            KitchenUiUtils.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as JsonObject.");
             return;
         }
 
         if (kitchenCallback == null) {
-            UiUtil.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
+            KitchenUiUtils.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
             return;
         }
 
@@ -161,12 +161,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void postRequest(HashMap<String, Object> params, final KitchenCallback kitchenCallback) {
 
         if (params == null) {
-            UiUtil.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as HashMap<String, Object>.");
+            KitchenUiUtils.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as HashMap<String, Object>.");
             return;
         }
 
         if (kitchenCallback == null) {
-            UiUtil.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
+            KitchenUiUtils.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
             return;
         }
 
@@ -203,12 +203,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void putRequest(HashMap<String, Object> params, final KitchenCallback kitchenCallback) {
 
         if (params == null) {
-            UiUtil.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as HashMap<String, Object>.");
+            KitchenUiUtils.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as HashMap<String, Object>.");
             return;
         }
 
         if (kitchenCallback == null) {
-            UiUtil.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
+            KitchenUiUtils.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
             return;
         }
 
@@ -245,12 +245,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void putRequest(JsonObject jsonObject, final KitchenCallback kitchenCallback) {
 
         if (jsonObject == null) {
-            UiUtil.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as JsonObject.");
+            KitchenUiUtils.showAlertDialog(mBaseContext, "Parameters Missing", "Please set parameter as JsonObject.");
             return;
         }
 
         if (kitchenCallback == null) {
-            UiUtil.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
+            KitchenUiUtils.showAlertDialog(mBaseContext, "Callback Missing", "Please set a callback.");
             return;
         }
 

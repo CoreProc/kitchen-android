@@ -26,13 +26,12 @@ import android.support.design.widget.TabLayout;
 import com.coreproc.android.kitchen.callbacks.LoginCallback;
 import com.coreproc.android.kitchen.models.APIError;
 import com.coreproc.android.kitchen.models.LoginCredentials;
-import com.coreproc.android.kitchen.models.User;
 import com.coreproc.android.kitchen.preferences.Preferences;
 import com.coreproc.android.kitchen.responses.UserData;
 import com.coreproc.android.kitchen.utils.ErrorUtil;
 import com.coreproc.android.kitchen.utils.KitchenRestClient;
 import com.coreproc.android.kitchen.utils.ApiInterface;
-import com.coreproc.android.kitchen.utils.UiUtil;
+import com.coreproc.android.kitchen.utils.KitchenUiUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -303,7 +302,7 @@ public abstract class UserActivity extends AppCompatActivity {
             mBaseUrl = bundle.getString("base-url", "");
 
             if (mBaseUrl.length() == 0) {
-                UiUtil.showAlertDialog(mContext, "URL not found", "Base URL not found in manifest. Please declare a meta-data value with name \"base-url\".");
+                KitchenUiUtils.showAlertDialog(mContext, "URL not found", "Base URL not found in manifest. Please declare a meta-data value with name \"base-url\".");
             }
 
         } catch (PackageManager.NameNotFoundException e) {
@@ -344,7 +343,7 @@ public abstract class UserActivity extends AppCompatActivity {
     protected void loginUser(final TextView userNameTextView, final TextView passwordTextView, Button loginButton, final LoginCallback callBack) {
 
         if (userNameTextView == null || passwordTextView == null || loginButton == null) {
-            UiUtil.showAlertDialog(mContext, "Views not found", "Please set valid views.");
+            KitchenUiUtils.showAlertDialog(mContext, "Views not found", "Please set valid views.");
             return;
         }
 
@@ -358,7 +357,7 @@ public abstract class UserActivity extends AppCompatActivity {
                     mLoginCallback = callBack;
 
                     if (mLoginCallback == null) {
-                        UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN CALLBACK (mLoginCallback).");
+                        KitchenUiUtils.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN CALLBACK (mLoginCallback).");
                         return;
                     }
                 }
@@ -371,12 +370,12 @@ public abstract class UserActivity extends AppCompatActivity {
                 if (userName.equals("") && password.equals("")) {
                     String title = "Error";
                     String message = "Please fill required fields";
-                    UiUtil.showAlertDialog(mContext, title, message, true);
+                    KitchenUiUtils.showAlertDialog(mContext, title, message, true);
                     return;
                 }
 
                 if (mLoginUrlSegment.length() == 0) {
-                    UiUtil.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
+                    KitchenUiUtils.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
                     return;
                 }
 
@@ -419,7 +418,7 @@ public abstract class UserActivity extends AppCompatActivity {
     protected void loginUser(String userName, String password, final LoginCallback callBack) {
 
         if (callBack == null) {
-            UiUtil.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN callback using \"setLoginCallback()\".");
+            KitchenUiUtils.showAlertDialog(mContext, "Callback not found", "Please set a LOGIN callback using \"setLoginCallback()\".");
             return;
         }
 
@@ -428,12 +427,12 @@ public abstract class UserActivity extends AppCompatActivity {
         if (userName.equals("") && password.equals("")) {
             String title = "Error";
             String message = "Please fill required fields";
-            UiUtil.showAlertDialog(mContext, title, message, true);
+            KitchenUiUtils.showAlertDialog(mContext, title, message, true);
             return;
         }
 
         if (mLoginUrlSegment.length() == 0) {
-            UiUtil.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
+            KitchenUiUtils.showAlertDialog(mContext, "URL not found", "Login URL not found in manifest. Please declare a meta-data value with name \"login-url-segment\".");
             return;
         }
 

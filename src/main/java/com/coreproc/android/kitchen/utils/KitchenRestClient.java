@@ -1,14 +1,13 @@
 package com.coreproc.android.kitchen.utils;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.coreproc.android.kitchen.Kitchen;
 import com.coreproc.android.kitchen.preferences.Preferences;
 
 import java.io.IOException;
@@ -45,21 +44,11 @@ public class KitchenRestClient {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        String baseUrl = "";
         // Get Base URL from meta-data
-        ApplicationInfo app = null;
-        try {
-            app = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-            Bundle bundle = app.metaData;
-            baseUrl = bundle.getString("base-url", "");
-
-            if (baseUrl.length() == 0) {
-                UiUtil.showAlertDialog(context, "URL not found", "Base URL not found in manifest. Please declare a meta-data value with name \"base-url\".");
-                return null;
-            }
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+        String baseUrl = Kitchen.getMetadataValue(context, "base-url");
+        if (baseUrl.length() == 0) {
+            KitchenUiUtils.showAlertDialog(context, "URL not found", "Base URL not found in manifest. Please declare a meta-data value with name \"base-url\".");
+            return null;
         }
 
         // Check for authorization
