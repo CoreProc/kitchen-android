@@ -52,6 +52,7 @@ public class Kitchen {
         Bitmap bm = null;
         try {
             bm = PhotoLoader.init().from(path).getBitmap();
+            bm = centerCropImage(bm);
             bm = Bitmap.createScaledBitmap(bm, 512, 512, false);
             bm = processImageOrientation(path, bm);
             bm.compress(Bitmap.CompressFormat.JPEG, 50, baos);
@@ -62,6 +63,34 @@ public class Kitchen {
         }
 
         return new String(Base64.encode(b, Base64.NO_WRAP));
+    }
+
+    private static Bitmap centerCropImage(Bitmap srcBmp) {
+
+        Bitmap dstBmp = null;
+
+        if (srcBmp.getWidth() >= srcBmp.getHeight()){
+
+            dstBmp = Bitmap.createBitmap(
+                    srcBmp,
+                    srcBmp.getWidth()/2 - srcBmp.getHeight()/2,
+                    0,
+                    srcBmp.getHeight(),
+                    srcBmp.getHeight()
+            );
+
+        }else{
+
+            dstBmp = Bitmap.createBitmap(
+                    srcBmp,
+                    0,
+                    srcBmp.getHeight()/2 - srcBmp.getWidth()/2,
+                    srcBmp.getWidth(),
+                    srcBmp.getWidth()
+            );
+        }
+
+        return dstBmp;
     }
 
     public static Bitmap processImageOrientation(String photoPath, Bitmap bitmap) {
