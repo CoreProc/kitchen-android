@@ -1,6 +1,7 @@
 package com.coreproc.android.kitchen;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.kosalgeek.android.photoutil.PhotoLoader;
 
+import org.joda.time.DateTimeZone;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.ByteArrayOutputStream;
@@ -44,6 +46,19 @@ public class Kitchen {
         String dateStr = "" + prettyTime.format(date);
         dateStr = dateStr.contains("moments") ? "Just now" : dateStr;
         return dateStr;
+    }
+
+
+    public static ProgressDialog defaultProgressDialog(Context context, String message) {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle(message);
+        progressDialog.setCancelable(false);
+        return progressDialog;
+    }
+
+
+    public static String getDefaultTimeZone() {
+        return "" + DateTimeZone.forTimeZone(TimeZone.getDefault());
     }
 
     public static String encodeImage(String path) {
