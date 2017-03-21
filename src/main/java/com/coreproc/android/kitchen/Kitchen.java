@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.coreproc.android.kitchen.preferences.Preferences;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.kosalgeek.android.photoutil.PhotoLoader;
 
 import org.joda.time.DateTimeZone;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -61,24 +60,6 @@ public class Kitchen {
         return "" + DateTimeZone.forTimeZone(TimeZone.getDefault());
     }
 
-    public static String encodeImage(String path) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] b = null;
-        Bitmap bm = null;
-        try {
-            bm = PhotoLoader.init().from(path).getBitmap();
-            bm = centerCropImage(bm);
-            bm = Bitmap.createScaledBitmap(bm, 512, 512, false);
-            bm = processImageOrientation(path, bm);
-            bm.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-            bm.recycle();
-            b = baos.toByteArray();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return new String(Base64.encode(b, Base64.NO_WRAP));
-    }
 
     private static Bitmap centerCropImage(Bitmap srcBmp) {
 
