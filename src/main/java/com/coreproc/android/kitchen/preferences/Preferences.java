@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 public class Preferences {
 
     public static String API_KEY = "apiKey";
+    public static String USER_ID = "userId";
 
     /*
         Setters for shared preferences
