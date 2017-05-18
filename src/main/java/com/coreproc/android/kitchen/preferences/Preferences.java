@@ -55,7 +55,7 @@ public class Preferences {
 
     public static boolean getBoolean(Context context, String key) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(key, true);
+        return sharedPreferences.getBoolean(key, false);
     }
 
     public static float getFloat(Context context, String key) {

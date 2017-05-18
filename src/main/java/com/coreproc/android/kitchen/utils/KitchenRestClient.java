@@ -82,6 +82,7 @@ public class KitchenRestClient {
                                 .addHeader("X-App-Version", finalAppVersionName)
                                 .addHeader("X-OS-Version", osVersion)
                                 .addHeader("X-Device-Name", getDeviceName())
+                                .addHeader("X-FCMToken", Preferences.getString(context, "FCM_TOKEN"))
                                 .build();
                         return chain.proceed(request);
                     }
