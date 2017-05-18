@@ -11,6 +11,7 @@ public class Preferences {
 
     public static String API_KEY = "apiKey";
     public static String USER_ID = "userId";
+    public static String FCM_TOKEN = "FCM_TOKEN";
 
     /*
         Setters for shared preferences
