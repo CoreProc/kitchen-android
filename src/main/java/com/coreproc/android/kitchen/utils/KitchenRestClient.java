@@ -55,7 +55,9 @@ public class KitchenRestClient {
         OkHttpClient client;
 
         final String authKey = Preferences.getString(context, Preferences.API_KEY);
+        final String fcmToken = Preferences.getString(context, "FCM_TOKEN");
         Log.d("authkey", "HELLO " + authKey);
+        Log.d("authkey", "FCMKey " + fcmToken);
 
         PackageInfo pInfo = null;
         String appVersionName = "";
@@ -82,7 +84,7 @@ public class KitchenRestClient {
                                 .addHeader("X-App-Version", finalAppVersionName)
                                 .addHeader("X-OS-Version", osVersion)
                                 .addHeader("X-Device-Name", getDeviceName())
-                                .addHeader("X-FCMToken", Preferences.getString(context, "FCM_TOKEN"))
+                                .addHeader("X-FCMToken", fcmToken)
                                 .build();
                         return chain.proceed(request);
                     }
