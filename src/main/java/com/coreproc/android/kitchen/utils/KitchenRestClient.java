@@ -70,6 +70,7 @@ public class KitchenRestClient {
 
         final String osVersion = android.os.Build.VERSION.RELEASE;
 
+        Log.d("FB Token in Prefs", "" + Preferences.getString(context, Preferences.FCM_TOKEN));
 
         final String finalAppVersionName = appVersionName;
         client = new OkHttpClient.Builder()
