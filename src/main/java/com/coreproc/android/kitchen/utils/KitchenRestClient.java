@@ -64,7 +64,7 @@ public class KitchenRestClient {
         try {
             pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             appVersionName = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (Exception e) {
             appVersionName = "N/A";
         }
 
