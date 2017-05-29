@@ -81,7 +81,7 @@ public class KitchenRestClient {
                         Request request = chain.request()
                                 .newBuilder()
                                 .addHeader("X-Authorization", authKey)
-                                .addHeader("X-App-Version", finalAppVersionName)
+                                .addHeader("X-Device-App-Version", finalAppVersionName)
                                 .addHeader("X-Device-OS", "android")
                                 .addHeader("X-Device-OS-Version", osVersion)
                                 .addHeader("X-Device-Manufacturer", "" + Build.MANUFACTURER)
