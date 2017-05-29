@@ -79,11 +79,13 @@ public class KitchenRestClient {
                         Request request = chain.request()
                                 .newBuilder()
                                 .addHeader("X-Authorization", authKey)
-                                .addHeader("X-OS", "android")
                                 .addHeader("X-App-Version", finalAppVersionName)
-                                .addHeader("X-OS-Version", osVersion)
-                                .addHeader("X-Device-Name", getDeviceName())
-                                .addHeader("X-FCMToken", Preferences.getString(context, Preferences.FCM_TOKEN))
+                                .addHeader("X-Device-OS", "android")
+                                .addHeader("X-Device-OS-Version", osVersion)
+                                .addHeader("X-Device-Manufacturer", "" + Build.MANUFACTURER)
+                                .addHeader("X-Device-Model", "" + Build.MODEL)
+                                .addHeader("X-Device-UDID",android.provider.Settings.System.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID))
+                                .addHeader("X-Device-FCM-Token", Preferences.getString(context, Preferences.FCM_TOKEN))
                                 .build();
                         return chain.proceed(request);
                     }
@@ -104,7 +106,7 @@ public class KitchenRestClient {
     }
 
     /** Returns the consumer friendly device name */
-    public static String getDeviceName() {
+    /*public static String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
         if (model.startsWith(manufacturer)) {
@@ -136,7 +138,7 @@ public class KitchenRestClient {
         }
 
         return phrase.toString();
-    }
+    }*/
 
 }
 
