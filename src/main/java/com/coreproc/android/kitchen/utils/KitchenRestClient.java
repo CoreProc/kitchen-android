@@ -55,14 +55,16 @@ public class KitchenRestClient {
         OkHttpClient client;
 
         final String authKey = Preferences.getString(context, Preferences.API_KEY);
+        final String fcmToken = Preferences.getString(context, "FCM_TOKEN");
         Log.d("authkey", "HELLO " + authKey);
+        Log.d("authkey", "FCMKey " + fcmToken);
 
         PackageInfo pInfo = null;
         String appVersionName = "";
         try {
             pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             appVersionName = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (Exception e) {
             appVersionName = "N/A";
         }
 
@@ -86,6 +88,7 @@ public class KitchenRestClient {
                                 .addHeader("X-Device-Model", "" + Build.MODEL)
                                 .addHeader("X-Device-UDID",android.provider.Settings.System.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID))
                                 .addHeader("X-Device-FCM-Token", Preferences.getString(context, Preferences.FCM_TOKEN))
+
                                 .build();
                         return chain.proceed(request);
                     }
