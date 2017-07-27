@@ -34,6 +34,53 @@ public class KitchenUiUtils {
         showAlertDialog(alertDialog);
     }
 
+    public static  void showAlertDialog(Context context, String title, String message, boolean cancelable, DialogInterface.OnClickListener onOkClickListener) {
+        if (context == null) {
+            return;
+        }
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(cancelable)
+                .setPositiveButton("OK", onOkClickListener)
+                .create();
+        showAlertDialog(alertDialog);
+    }
+
+    public static  void showAlertDialog(Context context, String title, String message, boolean cancelable,
+                                        String positiveText, DialogInterface.OnClickListener onPositiveClickListener,
+                                        String negativeText, DialogInterface.OnClickListener onNegativeClickListener) {
+        if (context == null) {
+            return;
+        }
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(cancelable)
+                .setPositiveButton(positiveText, onPositiveClickListener)
+                .setNegativeButton(negativeText, onNegativeClickListener)
+                .create();
+        showAlertDialog(alertDialog);
+    }
+
+    public static  void showAlertDialog(Context context, String title, String message, boolean cancelable,
+                                        String positiveText, DialogInterface.OnClickListener onPositiveClickListener,
+                                        String negativeText, DialogInterface.OnClickListener onNegativeClickListener,
+                                        String neutralText, DialogInterface.OnClickListener onNeutralClickListener) {
+        if (context == null) {
+            return;
+        }
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(cancelable)
+                .setPositiveButton(positiveText, onPositiveClickListener)
+                .setNegativeButton(negativeText, onNegativeClickListener)
+                .setNeutralButton(neutralText, onNeutralClickListener)
+                .create();
+        showAlertDialog(alertDialog);
+    }
+
     public static  void showAlertDialog(Context context, String title, String message) {
         showAlertDialog(context, title, message, false);
     }
