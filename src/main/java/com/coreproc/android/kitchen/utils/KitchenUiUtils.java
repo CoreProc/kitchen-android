@@ -1,5 +1,6 @@
 package com.coreproc.android.kitchen.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,11 @@ public class KitchenUiUtils {
         if (context == null) {
             return;
         }
+
+        if (((Activity) context).isFinishing()) {
+            return;
+        }
+
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
@@ -38,6 +44,11 @@ public class KitchenUiUtils {
         if (context == null) {
             return;
         }
+
+        if (((Activity) context).isFinishing()) {
+            return;
+        }
+
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
@@ -53,6 +64,11 @@ public class KitchenUiUtils {
         if (context == null) {
             return;
         }
+
+        if (((Activity) context).isFinishing()) {
+            return;
+        }
+
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
@@ -70,6 +86,11 @@ public class KitchenUiUtils {
         if (context == null) {
             return;
         }
+
+        if (((Activity) context).isFinishing()) {
+            return;
+        }
+
         AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
