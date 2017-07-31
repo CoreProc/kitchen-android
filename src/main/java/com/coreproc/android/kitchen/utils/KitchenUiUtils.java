@@ -40,6 +40,31 @@ public class KitchenUiUtils {
         showAlertDialog(alertDialog);
     }
 
+    public static  void showAlertDialog(final Context context, String title, String message,
+                                        boolean isCancelable, final boolean finishActivity) {
+        if (context == null) {
+            return;
+        }
+
+        if (((Activity) context).isFinishing()) {
+            return;
+        }
+
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(isCancelable)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ((Activity) context).finish();
+                            }
+                        })
+                .create();
+        showAlertDialog(alertDialog);
+    }
+
     public static  void showAlertDialog(Context context, String title, String message, boolean cancelable, DialogInterface.OnClickListener onOkClickListener) {
         if (context == null) {
             return;
