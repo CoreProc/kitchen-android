@@ -142,4 +142,10 @@ public class KitchenUiUtils {
         alertDialog = null;
     }
 
+    public static void showItemsSelectionDialog(Context context, String[] items, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setItems(items, onClickListener);
+        alertDialog.create().show();
+    }
+
 }
