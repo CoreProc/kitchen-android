@@ -3,12 +3,15 @@ package com.coreproc.android.kitchen;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.format.DateUtils;
 import android.util.Base64;
 import android.view.View;
@@ -232,6 +235,14 @@ public class Kitchen {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static void goToSettings(Context context) {
+        Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + context.getPackageName()));
+        myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
+        myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(myAppSettings);
+        ((Activity) context).finish();
     }
 
 }
