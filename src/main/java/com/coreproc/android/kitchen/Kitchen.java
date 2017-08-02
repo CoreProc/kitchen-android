@@ -213,6 +213,24 @@ public class Kitchen {
 
     }
 
+    public static boolean validateInputs(Context context) {
+        ViewGroup mainView = (ViewGroup) ((Activity) context).findViewById(android.R.id.content);
+
+        for (int i = 0; i < mainView.getChildCount(); i++) {
+            View view = mainView.getChildAt(i);
+            if (view instanceof EditText) {
+                EditText editText = (EditText) view;
+
+                // validate all input fields in view
+                if (editText.getText().toString().isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+
+    }
+
     private static ArrayList<TextView> getTextViews(ViewGroup root) {
         ArrayList<TextView> views = new ArrayList<>();
         for (int i = 0; i < root.getChildCount(); i++) {
