@@ -215,7 +215,7 @@ public class Kitchen {
 
     public static boolean validateInputs(Context context) {
         ViewGroup mainView = (ViewGroup) ((Activity) context).findViewById(android.R.id.content);
-
+ 
         for (int i = 0; i < mainView.getChildCount(); i++) {
             View view = mainView.getChildAt(i);
             if (view instanceof EditText) {
