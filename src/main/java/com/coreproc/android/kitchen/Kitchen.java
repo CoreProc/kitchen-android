@@ -263,4 +263,95 @@ public class Kitchen {
         ((Activity) context).finish();
     }
 
+    public static String convertMonthIntoInteger(String month) {
+        String monthValue = "";
+        switch (month) {
+            case "January":
+                monthValue = "01";
+                break;
+            case "February":
+                monthValue = "02";
+                break;
+            case "March":
+                monthValue = "03";
+                break;
+            case "April":
+                monthValue = "04";
+                break;
+            case "May":
+                monthValue = "05";
+                break;
+            case "June":
+                monthValue = "06";
+                break;
+            case "July":
+                monthValue = "07";
+                break;
+            case "August":
+                monthValue = "08";
+                break;
+            case "September":
+                monthValue = "09";
+                break;
+            case "October":
+                monthValue = "10";
+                break;
+            case "November":
+                monthValue = "11";
+                break;
+            case "December":
+                monthValue = "12";
+                break;
+            default:
+                break;
+        }
+        return monthValue;
+    }
+
+    public static String convertMonthIntoString(String month) {
+        String monthValue = "";
+        switch (month) {
+            case "01":
+                monthValue = "January";
+                break;
+            case "02":
+                monthValue = "February";
+                break;
+            case "03":
+                monthValue = "March";
+                break;
+            case "04":
+                monthValue = "April";
+                break;
+            case "05":
+                monthValue = "May";
+                break;
+            case "06":
+                monthValue = "June";
+                break;
+            case "07":
+                monthValue = "July";
+                break;
+            case "08":
+                monthValue = "August";
+                break;
+            case "09":
+                monthValue = "September";
+                break;
+            case "10":
+                monthValue = "October";
+                break;
+            case "11":
+                monthValue = "November";
+                break;
+            case "12":
+                monthValue = "December";
+                break;
+            default:
+                break;
+        }
+        return monthValue;
+    }
+
+
 }
