@@ -36,7 +36,7 @@ public class KitchenRestClient {
     private static String PREFS_CUSTOM_HEADERS = "PREFS_CUSTOM_HEADERS";
     private static String PREFS_INCLUDE_ADDITIONAL_HEADERS = "PREFS_INCLUDE_ADDITIONAL_HEADERS";
     private static Retrofit mRetrofit = null;
-    private String appVersionName = "N/A";
+    private static String appVersionName = "N/A";
 
     private static ApiInterface mApiInterface;
     //    private static String BASE_URL = "https://api.github.com/";
