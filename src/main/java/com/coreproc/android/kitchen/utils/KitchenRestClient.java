@@ -35,7 +35,7 @@ public class KitchenRestClient {
     private static String PREFS_INCLUDE_ADDITIONAL_HEADERS = "PREFS_INCLUDE_ADDITIONAL_HEADERS";
     private static Retrofit mRetrofit = null;
 
-    public RestClient() {
+    public KitchenRestClient() {
 
     }
 
