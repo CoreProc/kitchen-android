@@ -10,10 +10,6 @@ import android.util.Log;
 import com.coreproc.android.kitchen.Kitchen;
 import com.coreproc.android.kitchen.preferences.Preferences;
 import com.coreproc.android.kitchen.utils.KitchenUiUtils;
-import com.figarocoffee.android.BuildConfig;
-import com.figarocoffee.android.FigaroCoffeeBase;
-import com.figarocoffee.android.App;
-import com.figarocoffee.android.BuildConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -33,7 +29,7 @@ import retrofit2.Retrofit;
 import retrofit2.Retrofit.Builder;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RestClient {
+public class KitchenRestClient {
 
     private static String PREFS_CUSTOM_HEADERS = "PREFS_CUSTOM_HEADERS";
     private static String PREFS_INCLUDE_ADDITIONAL_HEADERS = "PREFS_INCLUDE_ADDITIONAL_HEADERS";
@@ -47,8 +43,8 @@ public class RestClient {
         return mRetrofit;
     }
 
-    public static void includeAdditionalHeaders(boolean include) {
-        Preferences.setBoolean(App.getInstance(), PREFS_INCLUDE_ADDITIONAL_HEADERS, include);
+    public static void includeAdditionalHeaders(Context context, boolean include) {
+        Preferences.setBoolean(context, PREFS_INCLUDE_ADDITIONAL_HEADERS, include);
     }
 
     public static <T> T create(final Context context, Class<T> interFace, final boolean withAuthorization) {
@@ -103,8 +99,17 @@ public class RestClient {
                                                      final HashMap<String, String> customHeaders) {
         final String authKey = Preferences.getString(context, Preferences.API_KEY);
         final String fcmToken = Preferences.getString(context, Preferences.FCM_TOKEN);
-        final String appVersionName = BuildConfig.VERSION_NAME;
         final String osVersion = VERSION.RELEASE;
+
+        PackageInfo pInfo = null;
+        String appVersionName = "";
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            appVersionName = pInfo.versionName;
+        } catch (Exception e) {
+            appVersionName = "N/A";
+        }
+
 
         Log.d("authkey", "kitchentoken " + authKey);
         Log.d("authkey", "fcmkey " + fcmToken);
