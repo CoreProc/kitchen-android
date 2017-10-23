@@ -122,12 +122,11 @@ public class KitchenRestClient {
         final String osVersion = VERSION.RELEASE;
 
         PackageInfo pInfo = null;
-        final String appVersionName = "";
+        final String appVersionName = "N/A";
         try {
             pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             appVersionName = pInfo.versionName;
         } catch (Exception e) {
-            appVersionName = "N/A";
         }
 
 
