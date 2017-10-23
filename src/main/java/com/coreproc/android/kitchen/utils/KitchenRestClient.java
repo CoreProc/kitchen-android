@@ -35,6 +35,25 @@ public class KitchenRestClient {
     private static String PREFS_INCLUDE_ADDITIONAL_HEADERS = "PREFS_INCLUDE_ADDITIONAL_HEADERS";
     private static Retrofit mRetrofit = null;
 
+    private static ApiInterface mApiInterface;
+    //    private static String BASE_URL = "https://api.github.com/";
+    private static Retrofit mRetrofit = null;
+
+    public static ApiInterface getmApiInterface(String url) {
+        if (mRetrofit == null) {
+            mRetrofit = new Retrofit.Builder()
+                    .baseUrl(url)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return mRetrofit.create(ApiInterface.class);
+    }
+    
+    public static Retrofit getmRetrofit() {
+        return mRetrofit;
+    }
+
+    
     public KitchenRestClient() {
 
     }
