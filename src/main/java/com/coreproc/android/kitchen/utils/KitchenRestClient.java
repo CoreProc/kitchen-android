@@ -37,7 +37,6 @@ public class KitchenRestClient {
 
     private static ApiInterface mApiInterface;
     //    private static String BASE_URL = "https://api.github.com/";
-    private static Retrofit mRetrofit = null;
 
     public static ApiInterface getmApiInterface(String url) {
         if (mRetrofit == null) {
